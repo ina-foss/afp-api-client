@@ -43,13 +43,13 @@ import fr.ina.research.afp.api.SearchApi;
 import fr.ina.research.afp.api.model.DateRange;
 import fr.ina.research.afp.api.model.NewsDocument;
 import fr.ina.research.afp.api.model.Parameters;
-import fr.ina.research.afp.api.model.Result;
 import fr.ina.research.afp.api.model.Parameters.LangEnum;
+import fr.ina.research.afp.api.model.Result;
 import fr.ina.research.afp.api.model.extended.FullMediaItem;
+import fr.ina.research.afp.api.model.extended.FullMediaItem.MediaFile;
 import fr.ina.research.afp.api.model.extended.FullNewsDocument;
 import fr.ina.research.afp.api.model.extended.FullParameter;
 import fr.ina.research.afp.api.model.extended.FullResult;
-import fr.ina.research.afp.api.model.extended.FullMediaItem.MediaFile;
 
 public class AFPDataGrabber {
 	private final static ObjectMapper jsonMapper;
@@ -229,6 +229,7 @@ public class AFPDataGrabber {
 	private final DateFormat dateDF;
 
 	private final Proxy proxy;
+	private final String endpoint;
 
 	private AFPAuthenticationManager aam;
 
@@ -241,12 +242,13 @@ public class AFPDataGrabber {
 	private final AFPDataGrabberCache cache;
 
 	public AFPDataGrabber(LangEnum lang, Map<String, String> authenticationProperties, Logger logger, File baseDir,
-			AFPDataGrabberCache cache, Proxy proxy) {
+			AFPDataGrabberCache cache, String endpoint, Proxy proxy) {
 		super();
-		aam = new AFPAuthenticationManager(authenticationProperties, proxy, logger);
+		aam = new AFPAuthenticationManager(authenticationProperties, endpoint, proxy, logger);
 		this.logger = logger;
 		this.baseDir = baseDir;
 		this.proxy = proxy;
+		this.endpoint = endpoint;
 		this.cache = cache;
 		lng = lang;
 		directoryDF = new SimpleDateFormat("yyyy/MM/dd/", Locale.FRANCE);
@@ -318,6 +320,7 @@ public class AFPDataGrabber {
 			File dir = getSessionDirectory(p.getLang() + "-" + postfix);
 			logger.debug("AFP - grabSearch - " + token + " - " + dir.getAbsolutePath());
 			api.getApiClient().setAccessToken(token);
+			api.getApiClient().setBasePath(endpoint);
 			if (proxy != null) {
 				api.getApiClient().getHttpClient().setProxy(proxy);
 			}

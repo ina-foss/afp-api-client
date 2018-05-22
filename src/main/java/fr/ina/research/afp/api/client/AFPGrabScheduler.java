@@ -54,6 +54,7 @@ public class AFPGrabScheduler {
 	private Map<String, String> authenticationProperties;
 	private String datadir;
 	private LangEnum lang;
+	private String apiBasePath;
 
 	private AFPDataGrabber afp;
 	private ScheduledExecutorService taskScheduler;
@@ -79,7 +80,7 @@ public class AFPGrabScheduler {
 			int maxDocs = lastMinutes * 50;
 
 			ZonedDateTime minDate = getMinRetrievedDocumentDate();
-			
+
 			if (minDate != null) {
 				ZonedDateTime now = ZonedDateTime.now();
 
@@ -117,6 +118,14 @@ public class AFPGrabScheduler {
 		}
 	}
 
+	public String getApiBasePath() {
+		return apiBasePath;
+	}
+
+	public Map<String, String> getAuthenticationProperties() {
+		return authenticationProperties;
+	}
+
 	public String getDatadir() {
 		return datadir;
 	}
@@ -125,21 +134,21 @@ public class AFPGrabScheduler {
 		return lang;
 	}
 
+	public Logger getLogger() {
+		return logger;
+	}
+
 	public ZonedDateTime getMinRetrievedDocumentDate() {
 		ZonedDateTime min = null;
-		
+
 		for (ZonedDateTime aDate : lastRetrievedDocuments.values()) {
-			//TODO a corriger si bug côté AFP
+			// TODO a corriger si bug côté AFP
 			if ((min == null) || aDate.isAfter(min)) {
 				min = aDate;
 			}
 		}
-		
-		return min;
-	}
 
-	public Logger getLogger() {
-		return logger;
+		return min;
 	}
 
 	public String getProxy() {
@@ -175,7 +184,7 @@ public class AFPGrabScheduler {
 			if (isEnableProxy()) {
 				prox = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(getProxy(), getProxyPort()));
 			}
-			afp = new AFPDataGrabber(lang, authenticationProperties, logger, new File(datadir), AFPDataGrabberCache.realCache(), prox);
+			afp = new AFPDataGrabber(lang, authenticationProperties, logger, new File(datadir), AFPDataGrabberCache.realCache(), getApiBasePath(), prox);
 		}
 	}
 
@@ -185,6 +194,14 @@ public class AFPGrabScheduler {
 
 	public void removeListener(AFPDataListener o) {
 		listeners.remove(o);
+	}
+
+	public void setApiBasePath(String apiBasePath) {
+		this.apiBasePath = apiBasePath;
+	}
+
+	public void setAuthenticationProperties(Map<String, String> authenticationProperties) {
+		this.authenticationProperties = authenticationProperties;
 	}
 
 	public void setDatadir(String datadir) {
@@ -232,17 +249,9 @@ public class AFPGrabScheduler {
 
 	public void updateLastRetrievedDocument(String product, ZonedDateTime aDate) {
 		ZonedDateTime last = lastRetrievedDocuments.get(product);
-		
+
 		if ((last == null) || aDate.isAfter(last)) {
 			lastRetrievedDocuments.put(product, aDate);
 		}
-	}
-
-	public Map<String, String> getAuthenticationProperties() {
-		return authenticationProperties;
-	}
-
-	public void setAuthenticationProperties(Map<String, String> authenticationProperties) {
-		this.authenticationProperties = authenticationProperties;
 	}
 }

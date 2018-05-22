@@ -79,7 +79,7 @@ public class AFPAuthenticationManager {
 	private MyOAuthToken currentToken;
 	private int refreshBefore;
 
-	public AFPAuthenticationManager(Map<String, String> authenticationProperties, Proxy proxy, Logger logger) {
+	public AFPAuthenticationManager(Map<String, String> authenticationProperties, String endpoint, Proxy proxy, Logger logger) {
 		super();
 
 		this.logger = logger;
@@ -89,6 +89,9 @@ public class AFPAuthenticationManager {
 		refreshBefore = 600;
 
 		apiClient = new ApiClient();
+		if (endpoint != null && !endpoint.isEmpty()) {
+			apiClient.setBasePath(endpoint);
+		}
 		if (proxy != null) {
 			apiClient.getHttpClient().setProxy(proxy);
 		}
@@ -97,8 +100,8 @@ public class AFPAuthenticationManager {
 		cleanToken();
 	}
 
-	public AFPAuthenticationManager(Proxy proxy, Logger logger) {
-		this(null, proxy, logger);
+	public AFPAuthenticationManager(String endpoint, Proxy proxy, Logger logger) {
+		this(null, endpoint, proxy, logger);
 	}
 
 	public void cleanToken() {

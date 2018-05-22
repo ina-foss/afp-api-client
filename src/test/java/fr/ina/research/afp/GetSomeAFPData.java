@@ -18,7 +18,6 @@ public class GetSomeAFPData {
 
 	public static void main(String[] args) {
 		Logger logger = LoggerFactory.getLogger(GetSomeAFPData.class);
-
 		Proxy proxy = null;
 		// If you are behind a proxy, use the following line with the correct parameters :
 		// proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("firewall.company.com", 80));
@@ -32,7 +31,7 @@ public class GetSomeAFPData {
 		// authentication.put(AFPAuthenticationManager.KEY_PASSWORD, "password");
 
 		AFPDataGrabber afp = new AFPDataGrabber(LangEnum.EN, authentication, logger, dataDir,
-				AFPDataGrabberCache.noCache(), proxy);
+				AFPDataGrabberCache.noCache(), "https://api.afp.com/", proxy);
 
 		AFPGrabSession gs = afp.grabSearchMax(false, 10);
 		logger.info("Grabbed " + gs.getAllDocuments().size() + " documents as [" + gs.getAuthenticatedAs() + "] in "
