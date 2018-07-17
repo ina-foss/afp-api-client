@@ -53,7 +53,7 @@ public class FullMediaItem {
 		}
 		
 		public boolean isImage() {
-			return "Photo".equalsIgnoreCase(getType());
+			return "Photo".equalsIgnoreCase(getType()) || "Graphic".equalsIgnoreCase(getType());
 		}
 	}
 
@@ -86,7 +86,10 @@ public class FullMediaItem {
 	
 	public List<MediaFile> getFilesToIndex() {
 		List<MediaFile> res = getVideos();
-		res.add(getBiggestImage());
+		MediaFile big = getBiggestImage();
+		if (big != null) {
+			res.add(big);
+		}
 		return res;
 	}
 	
