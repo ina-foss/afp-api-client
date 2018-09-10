@@ -89,7 +89,7 @@ public class AFPAuthenticationManager {
 		refreshBefore = 600;
 
 		apiClient = new ApiClient();
-		if (endpoint != null && !endpoint.isEmpty()) {
+		if ((endpoint != null) && !endpoint.isEmpty()) {
 			apiClient.setBasePath(endpoint);
 		}
 		if (proxy != null) {
@@ -227,6 +227,12 @@ public class AFPAuthenticationManager {
 
 	public void setRefreshBefore(int refreshBefore) {
 		this.refreshBefore = refreshBefore;
+	}
+
+	public void setTimeouts(int connect, int read, int write) {
+		apiClient.setConnectTimeout(connect);
+		apiClient.setReadTimeout(read);
+		apiClient.setWriteTimeout(write);
 	}
 
 }
