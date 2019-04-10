@@ -96,6 +96,9 @@ public class AFPDataGrabber {
 						Map bagMap = (Map) bagObject;
 						FullMediaItem fmi = new FullMediaItem();
 						String uno = (String) bagMap.get("uno");
+						if (uno == null) {
+							continue;
+						}
 						fmi.setUno(uno);
 						fmi.setCreator((String) bagMap.get("creator"));
 						fmi.setCaption((String) bagMap.get("caption"));
