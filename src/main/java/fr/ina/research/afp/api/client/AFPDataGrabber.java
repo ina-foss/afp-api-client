@@ -52,6 +52,9 @@ import fr.ina.research.afp.api.model.extended.FullParameter;
 import fr.ina.research.afp.api.model.extended.FullResult;
 
 public class AFPDataGrabber {
+	public final static String API_DOCS_FILE = "api_docs.json";
+	public final static String API_SEARCH_FILE = "api_search.json";
+
 	private final static ObjectMapper jsonMapper;
 
 	static {
@@ -113,8 +116,8 @@ public class AFPDataGrabber {
 							} else if (uno.toUpperCase().endsWith(".PNG")) {
 								existingExt = ".png";
 								uno = uno.substring(0, uno.lastIndexOf("."));
-							} else if (uno.toUpperCase().endsWith(".MP4") || uno.toUpperCase().endsWith(".MPG4")
-									|| uno.toUpperCase().endsWith(".MPEG4") || uno.toUpperCase().endsWith(".MPEG")) {
+							} else if (uno.toUpperCase().endsWith(".MP4") || uno.toUpperCase().endsWith(".MPG4") || uno.toUpperCase().endsWith(".MPEG4")
+									|| uno.toUpperCase().endsWith(".MPEG")) {
 								existingExt = ".mp4";
 								uno = uno.substring(0, uno.lastIndexOf("."));
 							} else if (uno.toUpperCase().endsWith(".FLV")) {
@@ -154,7 +157,7 @@ public class AFPDataGrabber {
 	}
 
 	public static File getDocsFile(File dir) {
-		return new File(dir, "api_docs.json");
+		return new File(dir, API_DOCS_FILE);
 	}
 
 	public static LangEnum getLangEnum(String lang) {
@@ -177,7 +180,7 @@ public class AFPDataGrabber {
 	}
 
 	public static File getSearchFile(File dir) {
-		return new File(dir, "api_search.json");
+		return new File(dir, API_SEARCH_FILE);
 	}
 
 	public static Collection<File> getValidReplayDirectories(File root) {
@@ -244,8 +247,7 @@ public class AFPDataGrabber {
 
 	private final AFPDataGrabberCache cache;
 
-	public AFPDataGrabber(LangEnum lang, Map<String, String> authenticationProperties, Logger logger, File baseDir,
-			AFPDataGrabberCache cache, String endpoint, Proxy proxy) {
+	public AFPDataGrabber(LangEnum lang, Map<String, String> authenticationProperties, Logger logger, File baseDir, AFPDataGrabberCache cache, String endpoint, Proxy proxy) {
 		super();
 		aam = new AFPAuthenticationManager(authenticationProperties, endpoint, proxy, logger);
 		this.logger = logger;
@@ -336,8 +338,7 @@ public class AFPDataGrabber {
 
 			Result r = api.searchUsingPOST1(p, "xml");
 
-			return processResponse(downloadItems, new FullResult(r, System.currentTimeMillis()), dir,
-					api.getApiClient().getHttpClient());
+			return processResponse(downloadItems, new FullResult(r, System.currentTimeMillis()), dir, api.getApiClient().getHttpClient());
 		} catch (ApiException apie) {
 			logger.error(apie.toString());
 			logger.error("API error", apie);
@@ -367,8 +368,7 @@ public class AFPDataGrabber {
 		return grabSearch(downloadItems, queryProduct(query(maxdocs), product), product + "-maxdocs-" + maxdocs);
 	}
 
-	private AFPGrabSession processResponse(boolean downloadItems, FullResult r, File dir, OkHttpClient httpClient)
-			throws IOException {
+	private AFPGrabSession processResponse(boolean downloadItems, FullResult r, File dir, OkHttpClient httpClient) throws IOException {
 		FileWriter w = new FileWriter(getDocsFile(dir));
 		w.write(serializeToString(r));
 		w.close();

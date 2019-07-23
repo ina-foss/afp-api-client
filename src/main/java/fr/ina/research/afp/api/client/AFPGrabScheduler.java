@@ -244,7 +244,9 @@ public class AFPGrabScheduler {
 	}
 
 	public void stop() {
-		taskScheduler.shutdownNow();
+		if (taskScheduler != null) {
+			taskScheduler.shutdownNow();
+		}
 	}
 
 	public void updateLastRetrievedDocument(String product, ZonedDateTime aDate) {
