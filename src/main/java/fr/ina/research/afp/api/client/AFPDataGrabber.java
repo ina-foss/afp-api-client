@@ -86,72 +86,74 @@ public class AFPDataGrabber {
 
 	private static List<FullNewsDocument> asFullDocuments(File dir, FullResult r) {
 		List<FullNewsDocument> full = new ArrayList<>();
-		for (NewsDocument nd : r.getInternal().getResponse().getDocs()) {
-			FullNewsDocument fd = new FullNewsDocument(nd, r.getRetrievedDate());
-			// logger.debug(fd.getPublished() + " - " + fd.getProduct() + " - "
-			// + fd.getLang() + " - " + fd.getTitle() + " - " +
-			// fd.getFullUno());
-			fd.setLocalFile(new File(dir, fd.getFullUno() + ".xml"));
-			if (fd.mayHaveMedia()) {
-				List<Object> bag = (List<Object>) nd.get("bagItem");
-				if (bag != null) {
-					for (Object bagObject : bag) {
-						Map bagMap = (Map) bagObject;
-						FullMediaItem fmi = new FullMediaItem();
-						String uno = (String) bagMap.get("uno");
-						if (uno == null) {
-							continue;
-						}
-						fmi.setUno(uno);
-						fmi.setCreator((String) bagMap.get("creator"));
-						fmi.setCaption((String) bagMap.get("caption"));
-						fmi.setProvider((String) bagMap.get("provider"));
+		if (r != null && r.getInternal() != null && r.getInternal().getResponse() != null && r.getInternal().getResponse().getDocs() != null) {
+			for (NewsDocument nd : r.getInternal().getResponse().getDocs()) {
+				FullNewsDocument fd = new FullNewsDocument(nd, r.getRetrievedDate());
+				// logger.debug(fd.getPublished() + " - " + fd.getProduct() + " - "
+				// + fd.getLang() + " - " + fd.getTitle() + " - " +
+				// fd.getFullUno());
+				fd.setLocalFile(new File(dir, fd.getFullUno() + ".xml"));
+				if (fd.mayHaveMedia()) {
+					List<Object> bag = (List<Object>) nd.get("bagItem");
+					if (bag != null) {
+						for (Object bagObject : bag) {
+							Map bagMap = (Map) bagObject;
+							FullMediaItem fmi = new FullMediaItem();
+							String uno = (String) bagMap.get("uno");
+							if (uno == null) {
+								continue;
+							}
+							fmi.setUno(uno);
+							fmi.setCreator((String) bagMap.get("creator"));
+							fmi.setCaption((String) bagMap.get("caption"));
+							fmi.setProvider((String) bagMap.get("provider"));
 
-						List<Map> medias = (List<Map>) bagMap.get("medias");
-						for (Map media : medias) {
-							String existingExt = "";
-							if (uno.toUpperCase().endsWith(".JPG") || uno.toUpperCase().endsWith(".JPEG")) {
-								existingExt = ".jpg";
-								uno = uno.substring(0, uno.lastIndexOf("."));
-							} else if (uno.toUpperCase().endsWith(".PNG")) {
-								existingExt = ".png";
-								uno = uno.substring(0, uno.lastIndexOf("."));
-							} else if (uno.toUpperCase().endsWith(".MP4") || uno.toUpperCase().endsWith(".MPG4") || uno.toUpperCase().endsWith(".MPEG4")
-									|| uno.toUpperCase().endsWith(".MPEG")) {
-								existingExt = ".mp4";
-								uno = uno.substring(0, uno.lastIndexOf("."));
-							} else if (uno.toUpperCase().endsWith(".FLV")) {
-								existingExt = ".flv";
-								uno = uno.substring(0, uno.lastIndexOf("."));
+							List<Map> medias = (List<Map>) bagMap.get("medias");
+							for (Map media : medias) {
+								String existingExt = "";
+								if (uno.toUpperCase().endsWith(".JPG") || uno.toUpperCase().endsWith(".JPEG")) {
+									existingExt = ".jpg";
+									uno = uno.substring(0, uno.lastIndexOf("."));
+								} else if (uno.toUpperCase().endsWith(".PNG")) {
+									existingExt = ".png";
+									uno = uno.substring(0, uno.lastIndexOf("."));
+								} else if (uno.toUpperCase().endsWith(".MP4") || uno.toUpperCase().endsWith(".MPG4") || uno.toUpperCase().endsWith(".MPEG4")
+										|| uno.toUpperCase().endsWith(".MPEG")) {
+									existingExt = ".mp4";
+									uno = uno.substring(0, uno.lastIndexOf("."));
+								} else if (uno.toUpperCase().endsWith(".FLV")) {
+									existingExt = ".flv";
+									uno = uno.substring(0, uno.lastIndexOf("."));
+								}
+
+								String role = (String) media.get("role");
+								String type = (String) media.get("type");
+								String ext = "Video".equalsIgnoreCase(type) ? ".mp4" : ".jpg";
+								String mediaHref = (String) media.get("href");
+								Double width = (Double) media.get("width");
+								Double height = (Double) media.get("height");
+								int size = 0;
+								if ((width != null) && (height != null)) {
+									size = width.intValue() * height.intValue();
+								}
+								File localFile = new File(dir, uno + "-" + role + ext);
+								FullMediaItem.MediaFile f = new FullMediaItem.MediaFile();
+								f.setHref(mediaHref);
+								f.setRole(role);
+								f.setType(type);
+								f.setLocalFile(localFile);
+								f.setSize(size);
+								fmi.addMediaFile(f);
+
+								// fd.putFile(mediaHref, localFile);
 							}
 
-							String role = (String) media.get("role");
-							String type = (String) media.get("type");
-							String ext = "Video".equalsIgnoreCase(type) ? ".mp4" : ".jpg";
-							String mediaHref = (String) media.get("href");
-							Double width = (Double) media.get("width");
-							Double height = (Double) media.get("height");
-							int size = 0;
-							if ((width != null) && (height != null)) {
-								size = width.intValue() * height.intValue();
-							}
-							File localFile = new File(dir, uno + "-" + role + ext);
-							FullMediaItem.MediaFile f = new FullMediaItem.MediaFile();
-							f.setHref(mediaHref);
-							f.setRole(role);
-							f.setType(type);
-							f.setLocalFile(localFile);
-							f.setSize(size);
-							fmi.addMediaFile(f);
-
-							// fd.putFile(mediaHref, localFile);
+							fd.addMediaItem(fmi);
 						}
-
-						fd.addMediaItem(fmi);
 					}
 				}
+				full.add(fd);
 			}
-			full.add(fd);
 		}
 		return full;
 	}
