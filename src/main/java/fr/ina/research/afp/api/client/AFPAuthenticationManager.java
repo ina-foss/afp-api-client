@@ -66,8 +66,8 @@ public class AFPAuthenticationManager {
 	private final static Type myOAuthTokenType = new TypeToken<MyOAuthToken>() {
 	}.getType();
 
-	public final static String KEY_CLIENT = "AFP_API_client";
-	public final static String KEY_SECRET = "AFP_API_secret";
+	public final static String KEY_CLIENT_ID = "AFP_API_client_id";
+	public final static String KEY_CLIENT_SECRET = "AFP_API_client_secret";
 	public final static String KEY_USERNAME = "AFP_API_user";
 	public final static String KEY_PASSWORD = "AFP_API_pass";
 
@@ -109,7 +109,7 @@ public class AFPAuthenticationManager {
 	}
 
 	public String getAuthenticatedAs() {
-		return isAnonymous() ? "anonymous" : authenticationProperties.get(KEY_CLIENT) + "/" + authenticationProperties.get(KEY_USERNAME);
+		return isAnonymous() ? "anonymous" : authenticationProperties.get(KEY_CLIENT_ID) + "/" + authenticationProperties.get(KEY_USERNAME);
 	}
 
 	public String getToken() throws IOException {
@@ -183,8 +183,8 @@ public class AFPAuthenticationManager {
 		localVarQueryParams.addAll(apiClient.parameterToPairs("", "grant_type", grantType));
 
 		if ("refresh_token".equals(grantType) || "password".equals(grantType)) {
-			String client = authenticationProperties.get(KEY_CLIENT);
-			String secret = authenticationProperties.get(KEY_SECRET);
+			String client = authenticationProperties.get(KEY_CLIENT_ID);
+			String secret = authenticationProperties.get(KEY_CLIENT_SECRET);
 			byte[] creds = (client + ":" + secret).getBytes();
 			localVarHeaderParams.put("Authorization", "Basic " + Base64.getEncoder().encodeToString(creds));
 		}
