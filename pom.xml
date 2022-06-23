@@ -18,7 +18,7 @@
 		<jodatime-version>2.9.3</jodatime-version>
 		<commons-io-version>2.7</commons-io-version>
 		<maven-plugin-version>1.0.0</maven-plugin-version>
-		<junit-version>4.12</junit-version>
+		<junit-version>4.13.1</junit-version>
 		<slf4j.version>1.7.7</slf4j.version>
 		<jackson.version>2.10.1</jackson.version>
 		<javax.annotation-api.version>1.3.2</javax.annotation-api.version>
