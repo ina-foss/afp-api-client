@@ -1,8 +1,8 @@
 /**
- * AFP Content API
- * The first version of the AFP API is an exciting step forward towards making it easier for users to have open access to news articles from Agence France-Presse.  We created it so that you can surface the amazing content AFP share every second, in innovative ways.  Build something great!  Once you've been registered by your AFP marketing contact, it's easy to start requesting data from AFP API.  All endpoints are only accessible via https and are located at __`api.afpforum.com`__.  [External API scheme](https://api.afpforum.com/v1/docs?group=api)  [External API documentation in english](https://api.afpforum.com/docs/api-en.pdf)  [External API documentation in french](https://api.afpforum.com/docs/api-fr.pdf)  ---  #### AUTHENTICATION ####  To access the service you must get an access token from the authorize end point. You have three ways to get it. The authentification scheme is based on OAuth 2.0.  To access to all authentication end point you must pass in the basic authentification header the client-id and client-secret provided by your AFP marketing contact.  * __Anonymous mode__: this is the way to test the service by fetching news items from the last days: https://api.afpforum.com/oauth/token?grant_type=anonymous  * __Temporary access__: this allows you access to the full service for a short period. You need to provide an authorization code. This code is given by your AFP marketing contact. https://api.afpforum.com/oauth/token?grant_type=authorization_code&code=ACCESS-CODE  * __Permanent access__: If you are a regular customer with a user name and password, you grab an access token from  https://api.afpforum.com/oauth/token?username=USERNAME&password=PASSWORD&grant_type=password  The HTTP Method POST and GET are supported, POST Method prefered. You must provide in the HTTP  Header Basic Authentification, you client id and your client secret. Else you will not be able to use the API.   Sample authentification using curl: curl -su CLIENT_ID:CLIENT_SECRET -H \"Accept: application/json\" \"https://api.afpforum.com/oauth/token?username=USER&password=PASSWORD&grant_type=password   After authentication, you can grab the latest news by accessing the following URL with your access token (replace ACCESS-TOKEN with your own):   https://api.afpforum.com/v1/api/latest?access_token=ACCESS-TOKEN&lang=en&tz=GMT  You're best off using an access_token for the authenticated user for each endpoint, though many endpoints require it. In some cases an access_token will give you more access to information, and in all cases, it means that you are operating under a per-access_token limit.  ---  #### Limit Be nice.####  If you're sending too many requests too quickly, we'll send back a `503` error code (server unavailable). You are limited to 5000 requests per hour per `access_token` or `client_id` overall. Practically, this means you should (when possible) authenticate users so that limits are well outside the reach of a given user.  ---  #### RESPONSE  ####  Every response is contained by an envelope. That is, each response has a predictable set of keys with which you can expect to interact:   json {    \"response\": {     \"status\": {      \"code\": 0,      \"reason\": \"Success\"     },     ...    }  }  ---  #### STATUS ####  The status key is used to communicate information about the response to the developer. If everything goes fine, you'll only ever see a code key with value 0. However, sometimes things go wrong, and in that case you might see a response like:    json {   \"error\": {    \"error_type\": \"SearchServerException\",    \"code\": 401,    \"message\": \"Access token expired\"   }  }   ---  #### DATE ARGUMENT ####  The date format is compliant to YYYY-MM-DD'T'HH:mm:ssZ format, like 2016-10-24T22:00:00Z, it supports also Date Math expression format  Some examples are:  * `now-1h`: The current time minus one hour, with ms resolution. * `now-1h+1m`: The current time minus one hour plus one minute, with ms resolution. * `now-1h/d`: The current time minus one hour, rounded down to the nearest day. * `now-1M`: The current time minus one month, with ms resolution. * `2015-01-01||+1M/d`: 2015-01-01 plus one month, rounded down to the nearest day.  ---  #### PARAMETERS ####  The parameter object is complex, some examples below  !!! %%%Simple parameter searching items in multimedia production  json {   \"tz\": \"Europe/Paris\",   \"dateRange\": {    \"from\": \"now-1M\",    \"to\": \"now\"   },   \"sortField\": \"published\",   \"sortOrder\": \"desc\",   \"dateGap\": \"day\",   \"lang\": \"fr\",   \"wantCluster\": true,   \"maxRows\": 50,   \"fields\": [   ],   \"wantedFacets\": {    \"product\": {     \"minDocCount\": 1,     \"size\": 5    },    \"iptc\": {     \"minDocCount\": 1,     \"size\": 100    },    \"country\": {     \"minDocCount\": 1,     \"size\": 100    },    \"city\": {     \"minDocCount\": 1,     \"size\": 100    },    \"slug\": {     \"minDocCount\": 1,     \"size\": 3    },    \"urgency\": {     \"minDocCount\": 1,     \"size\": 100    }   },   \"query\": {    \"name\": \"product\",    \"and\": \"multimedia\"   }  } ¡¡¡  !!! %%%Combined parameter searching items in news and multimedia production concerning the France and Germany country  json {   \"tz\": \"Europe/Paris\",   \"dateRange\": {    \"from\": \"now-1M\",    \"to\": \"now\"   },   \"sortField\": \"published\",   \"sortOrder\": \"desc\",   \"dateGap\": \"day\",   \"lang\": \"fr\",   \"wantCluster\": true,   \"maxRows\": 50,   \"fields\": [   ],   \"wantedFacets\": {    \"product\": {     \"minDocCount\": 1,     \"size\": 5    },    \"iptc\": {     \"minDocCount\": 1,     \"size\": 100    },    \"country\": {     \"minDocCount\": 1,     \"size\": 100    },    \"city\": {     \"minDocCount\": 1,     \"size\": 100    },    \"slug\": {     \"minDocCount\": 1,     \"size\": 3    },    \"urgency\": {     \"minDocCount\": 1,     \"size\": 100    }   },   \"query\": {    \"and\": [     {      \"name\": \"product\",      \"in\": [       \"multimedia\",       \"news\"      ]     },     {      \"name\": \"country\",      \"or\": [       \"FRA\",       \"DEU\"      ]     }    ]   }  } ¡¡¡   !!! %%%Complex parameter searching items in multimedia production concerning the France country and the talking about rugby without \"TOP 14\" national league   {   ...      \"query\": {    \"and\": [     {      \"name\": \"product\",      \"in\": [       \"multimedia\"      ]     },     {      \"name\": \"country\",      \"in\": [       \"FRA\"      ]     },     {      \"and\": [       {        \"name\": \"news\",        \"contains\": [         \"rugby\"        ]       },       {        \"exclude\": [         {          \"name\": \"news\",          \"contains\": [           \"TOP 14\"          ]         }        ]       }      ]     }    ]   }  } ¡¡¡ ---    
+ * AFP Core API
+ * The first version of the AFP API is an exciting step forward towards making it easier for users to have open access to news articles from Agence France-Presse.  We created it so that you can surface the amazing content AFP share every second, in innovative ways.  Build something great!  Once you've been registered by your AFP marketing contact, it's easy to start requesting data from AFP API.  All endpoints are only accessible via https and are located at `https://afp-apicore-prod.afp.com/v1`.  [External API scheme](https://afp-apicore-prod.afp.com/v1/docs?group=api)  ---  #### AUTHENTICATION ####  To access the service you must get an access token from the authorised end point. You have three ways to get it. The authentication scheme is based on OAuth 2.0.  To access all authentication end points, you must fill in the basic authentication header with the client ID and client secret provided by your AFP marketing contact.  * __Anonymous mode__: this is the way to test the service by fetching news items from the day before: https://afp-apicore-prod.afp.com/oauth/token?grant_type=anonymous  * __Temporary access__: this allows you access to the full service for a short period. You need to provide an authorisation code. This code is given to you by your AFP marketing contact. https://afp-apicore-prod.afp.com/oauth/token?grant_type=authorization_code&code=ACCESS-CODE  * __Permanent access__: If you are a regular customer with a user name and password, you grab an access token from  https://afp-apicore-prod.afp.com/oauth/token?username=USERNAME&password=PASSWORD&grant_type=password  The HTTP Method POST and GET are supported, POST Method preferred. You must fill in the HTTP  Header Basic Authentication with your client ID and your client secret, else you will not be able to use the API.   Sample authentication using curl: curl -su CLIENT_ID:CLIENT_SECRET -H \"Accept: application/json\" \"https://afp-apicore-prod.afp.com/oauth/token?username=USER&password=PASSWORD&grant_type=password   After authentication, you can grab the latest news by accessing the following URL with your access token (replace ACCESS-TOKEN with your own):   https://afp-apicore-prod.afp.com/v1/api/latest?access_token=ACCESS-TOKEN&lang=en&tz=GMT  You're best off using an access_token for the authenticated user for each endpoint, though many endpoints require it. In some cases an access_token will give you more access to information, and in all cases, it means that you are operating under a per-access_token limit.  ---  #### Limit Be nice. ####  If you're sending too many requests too quickly, we'll send back a `503` error code (server unavailable). You are limited to 5000 requests per hour per `access_token` or `client_id` overall. Practically, this means you should (when possible) authenticate users so that limits are well outside the reach of a given user.  ---  #### RESPONSE  ####  Every response is contained by an envelope. That is, each response has a predictable set of keys with which you can expect to interact:   json {    \"response\": {     \"status\": {      \"code\": 0,      \"reason\": \"Success\"     },     ...    }  }  ---  #### STATUS ####  The status key is used to communicate information about the response to the developer. If everything goes fine, you'll only ever see a code key with value 0. However, sometimes things go wrong, and in that case you might see a response like:    json {   \"error\": {    \"error_type\": \"SearchServerException\",    \"code\": 401,    \"message\": \"Access token expired\"   }  }   ---  #### DATE ARGUMENT ####  The date format is compliant to YYYY-MM-DD'T'HH:mm:ssZ format, like 2016-10-24T22:00:00Z, it supports also Date Math expression format  Some examples are:  * `now-1h`: The current time minus one hour, with ms resolution. * `now-1h+1m`: The current time minus one hour plus one minute, with ms resolution. * `now-1h/d`: The current time minus one hour, rounded down to the nearest day. * `now-1M`: The current time minus one month, with ms resolution. * `2015-01-01||+1M/d`: 2015-01-01 plus one month, rounded down to the nearest day.  ---  #### PARAMETERS ####  The parameter object is complex, some examples below  !!! %%%Simple parameter searching items in multimedia production  json {   \"tz\": \"Europe/Paris\",   \"dateRange\": {    \"from\": \"now-1M\",    \"to\": \"now\"   },   \"sortField\": \"published\",   \"sortOrder\": \"desc\",   \"dateGap\": \"day\",   \"lang\": \"fr\",   \"wantCluster\": true,   \"maxRows\": 50,   \"fields\": [   ],   \"wantedFacets\": {    \"product\": {     \"minDocCount\": 1,     \"size\": 5    },    \"iptc\": {     \"minDocCount\": 1,     \"size\": 100    },    \"country\": {     \"minDocCount\": 1,     \"size\": 100    },    \"city\": {     \"minDocCount\": 1,     \"size\": 100    },    \"slug\": {     \"minDocCount\": 1,     \"size\": 3    },    \"urgency\": {     \"minDocCount\": 1,     \"size\": 100    }   },   \"query\": {    \"name\": \"product\",    \"and\": \"multimedia\"   }  } ¡¡¡  !!! %%%Combined parameter searching items in news and multimedia production concerning the France and Germany country  json {   \"tz\": \"Europe/Paris\",   \"dateRange\": {    \"from\": \"now-1M\",    \"to\": \"now\"   },   \"sortField\": \"published\",   \"sortOrder\": \"desc\",   \"dateGap\": \"day\",   \"lang\": \"fr\",   \"wantCluster\": true,   \"maxRows\": 50,   \"fields\": [   ],   \"wantedFacets\": {    \"product\": {     \"minDocCount\": 1,     \"size\": 5    },    \"iptc\": {     \"minDocCount\": 1,     \"size\": 100    },    \"country\": {     \"minDocCount\": 1,     \"size\": 100    },    \"city\": {     \"minDocCount\": 1,     \"size\": 100    },    \"slug\": {     \"minDocCount\": 1,     \"size\": 3    },    \"urgency\": {     \"minDocCount\": 1,     \"size\": 100    }   },   \"query\": {    \"and\": [     {      \"name\": \"product\",      \"in\": [       \"multimedia\",       \"news\"      ]     },     {      \"name\": \"country\",      \"or\": [       \"FRA\",       \"DEU\"      ]     }    ]   }  } ¡¡¡   !!! %%%Complex parameter searching items in multimedia production concerning the France country and the talking about rugby without \"TOP 14\" national league   json {   ...      \"query\": {    \"and\": [     {      \"name\": \"product\",      \"in\": [       \"multimedia\"      ]     },     {      \"name\": \"country\",      \"in\": [       \"FRA\"      ]     },     {      \"and\": [       {        \"name\": \"news\",        \"contains\": [         \"rugby\"        ]       },       {        \"exclude\": [         {          \"name\": \"news\",          \"contains\": [           \"TOP 14\"          ]         }        ]       }      ]     }    ]   }  } ¡¡¡ --- 
  *
- * OpenAPI spec version: v0.3.0
+ * OpenAPI spec version: 1.1.26
  * Contact: api-support@afp.com
  *
  * NOTE: This class is auto generated by the swagger code generator program.
@@ -25,6 +25,13 @@
 
 package fr.ina.research.afp.api;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.reflect.TypeToken;
 
 import fr.ina.research.afp.ApiCallback;
@@ -35,18 +42,10 @@ import fr.ina.research.afp.Configuration;
 import fr.ina.research.afp.Pair;
 import fr.ina.research.afp.ProgressRequestBody;
 import fr.ina.research.afp.ProgressResponseBody;
-import fr.ina.research.afp.api.model.ErrorMapping;
 import fr.ina.research.afp.api.model.Parameters;
 import fr.ina.research.afp.api.model.ReponseMapping;
 import fr.ina.research.afp.api.model.ReponseTopics;
 import fr.ina.research.afp.api.model.Result;
-
-import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class HelpersApi {
     private ApiClient apiClient;
@@ -67,18 +66,18 @@ public class HelpersApi {
         this.apiClient = apiClient;
     }
 
-    /* Build call for documentUsingGET1 */
-    private com.squareup.okhttp.Call documentUsingGET1Call(String uno, String wt, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for documentUsingGET */
+    private com.squareup.okhttp.Call documentUsingGETCall(String uno, String wt, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // verify the required parameter 'uno' is set
         if (uno == null) {
-            throw new ApiException("Missing the required parameter 'uno' when calling documentUsingGET1(Async)");
+            throw new ApiException("Missing the required parameter 'uno' when calling documentUsingGET(Async)");
         }
         
         // verify the required parameter 'wt' is set
         if (wt == null) {
-            throw new ApiException("Missing the required parameter 'wt' when calling documentUsingGET1(Async)");
+            throw new ApiException("Missing the required parameter 'wt' when calling documentUsingGET(Async)");
         }
         
 
@@ -130,8 +129,8 @@ public class HelpersApi {
      * @return Result
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public Result documentUsingGET1(String uno, String wt) throws ApiException {
-        ApiResponse<Result> resp = documentUsingGET1WithHttpInfo(uno, wt);
+    public Result documentUsingGET(String uno, String wt) throws ApiException {
+        ApiResponse<Result> resp = documentUsingGETWithHttpInfo(uno, wt);
         return resp.getData();
     }
 
@@ -143,8 +142,8 @@ public class HelpersApi {
      * @return ApiResponse&lt;Result&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Result> documentUsingGET1WithHttpInfo(String uno, String wt) throws ApiException {
-        com.squareup.okhttp.Call call = documentUsingGET1Call(uno, wt, null, null);
+    public ApiResponse<Result> documentUsingGETWithHttpInfo(String uno, String wt) throws ApiException {
+        com.squareup.okhttp.Call call = documentUsingGETCall(uno, wt, null, null);
         Type localVarReturnType = new TypeToken<Result>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -158,7 +157,7 @@ public class HelpersApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call documentUsingGET1Async(String uno, String wt, final ApiCallback<Result> callback) throws ApiException {
+    public com.squareup.okhttp.Call documentUsingGETAsync(String uno, String wt, final ApiCallback<Result> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -179,13 +178,13 @@ public class HelpersApi {
             };
         }
 
-        com.squareup.okhttp.Call call = documentUsingGET1Call(uno, wt, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = documentUsingGETCall(uno, wt, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<Result>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
-    /* Build call for mappingUsingGET1 */
-    private com.squareup.okhttp.Call mappingUsingGET1Call(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for mappingUsingGET */
+    private com.squareup.okhttp.Call mappingUsingGETCall(List<String> lang, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
 
@@ -193,6 +192,8 @@ public class HelpersApi {
         String localVarPath = "/v1/api/mapping".replaceAll("\\{format\\}","json");
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        if (lang != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "lang", lang));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -229,22 +230,24 @@ public class HelpersApi {
     /**
      * List field mapping
      * list all field name allowed in document
+     * @param lang Give the lang to search content (optional)
      * @return ReponseMapping
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ReponseMapping mappingUsingGET1() throws ApiException {
-        ApiResponse<ReponseMapping> resp = mappingUsingGET1WithHttpInfo();
+    public ReponseMapping mappingUsingGET(List<String> lang) throws ApiException {
+        ApiResponse<ReponseMapping> resp = mappingUsingGETWithHttpInfo(lang);
         return resp.getData();
     }
 
     /**
      * List field mapping
      * list all field name allowed in document
+     * @param lang Give the lang to search content (optional)
      * @return ApiResponse&lt;ReponseMapping&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ReponseMapping> mappingUsingGET1WithHttpInfo() throws ApiException {
-        com.squareup.okhttp.Call call = mappingUsingGET1Call(null, null);
+    public ApiResponse<ReponseMapping> mappingUsingGETWithHttpInfo(List<String> lang) throws ApiException {
+        com.squareup.okhttp.Call call = mappingUsingGETCall(lang, null, null);
         Type localVarReturnType = new TypeToken<ReponseMapping>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -252,11 +255,12 @@ public class HelpersApi {
     /**
      * List field mapping (asynchronously)
      * list all field name allowed in document
+     * @param lang Give the lang to search content (optional)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call mappingUsingGET1Async(final ApiCallback<ReponseMapping> callback) throws ApiException {
+    public com.squareup.okhttp.Call mappingUsingGETAsync(List<String> lang, final ApiCallback<ReponseMapping> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -277,23 +281,18 @@ public class HelpersApi {
             };
         }
 
-        com.squareup.okhttp.Call call = mappingUsingGET1Call(progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = mappingUsingGETCall(lang, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<ReponseMapping>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
-    /* Build call for topicsUsingGET1 */
-    private com.squareup.okhttp.Call topicsUsingGET1Call(String facet, String lang, Integer minDocCount, Integer size, String tz, String gap, String from, String to, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for topicsUsingGET */
+    private com.squareup.okhttp.Call topicsUsingGETCall(String facet, Integer minDocCount, Integer size, List<String> lang, String tz, String gap, String from, String to, Boolean tr, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
         
         // verify the required parameter 'facet' is set
         if (facet == null) {
-            throw new ApiException("Missing the required parameter 'facet' when calling topicsUsingGET1(Async)");
-        }
-        
-        // verify the required parameter 'lang' is set
-        if (lang == null) {
-            throw new ApiException("Missing the required parameter 'lang' when calling topicsUsingGET1(Async)");
+            throw new ApiException("Missing the required parameter 'facet' when calling topicsUsingGET(Async)");
         }
         
 
@@ -307,7 +306,7 @@ public class HelpersApi {
         if (size != null)
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "size", size));
         if (lang != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "lang", lang));
+        localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "lang", lang));
         if (tz != null)
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "tz", tz));
         if (gap != null)
@@ -316,6 +315,8 @@ public class HelpersApi {
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "from", from));
         if (to != null)
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "to", to));
+        if (tr != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "tr", tr));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -353,18 +354,19 @@ public class HelpersApi {
      * List facet
      * Return all value for a facet
      * @param facet The facet to be listed (required)
-     * @param lang Give the lang to search content (required)
      * @param minDocCount The min document number for the facet (optional, default to 1)
      * @param size The size parameter can be set to define how many term facets should be returned out of the overall terms list (optional)
+     * @param lang Give the lang to search content (optional)
      * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
      * @param gap For the facet date, tell the granularity. Default day. (optional, default to day)
      * @param from The start limit date for search in coda format. Default his according of client profile. (optional)
      * @param to The end limit date for search in coda format. Default his now. (optional, default to now)
+     * @param tr Include translated document (optional, default to false)
      * @return ReponseTopics
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ReponseTopics topicsUsingGET1(String facet, String lang, Integer minDocCount, Integer size, String tz, String gap, String from, String to) throws ApiException {
-        ApiResponse<ReponseTopics> resp = topicsUsingGET1WithHttpInfo(facet, lang, minDocCount, size, tz, gap, from, to);
+    public ReponseTopics topicsUsingGET(String facet, Integer minDocCount, Integer size, List<String> lang, String tz, String gap, String from, String to, Boolean tr) throws ApiException {
+        ApiResponse<ReponseTopics> resp = topicsUsingGETWithHttpInfo(facet, minDocCount, size, lang, tz, gap, from, to, tr);
         return resp.getData();
     }
 
@@ -372,18 +374,19 @@ public class HelpersApi {
      * List facet
      * Return all value for a facet
      * @param facet The facet to be listed (required)
-     * @param lang Give the lang to search content (required)
      * @param minDocCount The min document number for the facet (optional, default to 1)
      * @param size The size parameter can be set to define how many term facets should be returned out of the overall terms list (optional)
+     * @param lang Give the lang to search content (optional)
      * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
      * @param gap For the facet date, tell the granularity. Default day. (optional, default to day)
      * @param from The start limit date for search in coda format. Default his according of client profile. (optional)
      * @param to The end limit date for search in coda format. Default his now. (optional, default to now)
+     * @param tr Include translated document (optional, default to false)
      * @return ApiResponse&lt;ReponseTopics&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ReponseTopics> topicsUsingGET1WithHttpInfo(String facet, String lang, Integer minDocCount, Integer size, String tz, String gap, String from, String to) throws ApiException {
-        com.squareup.okhttp.Call call = topicsUsingGET1Call(facet, lang, minDocCount, size, tz, gap, from, to, null, null);
+    public ApiResponse<ReponseTopics> topicsUsingGETWithHttpInfo(String facet, Integer minDocCount, Integer size, List<String> lang, String tz, String gap, String from, String to, Boolean tr) throws ApiException {
+        com.squareup.okhttp.Call call = topicsUsingGETCall(facet, minDocCount, size, lang, tz, gap, from, to, tr, null, null);
         Type localVarReturnType = new TypeToken<ReponseTopics>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -392,18 +395,19 @@ public class HelpersApi {
      * List facet (asynchronously)
      * Return all value for a facet
      * @param facet The facet to be listed (required)
-     * @param lang Give the lang to search content (required)
      * @param minDocCount The min document number for the facet (optional, default to 1)
      * @param size The size parameter can be set to define how many term facets should be returned out of the overall terms list (optional)
+     * @param lang Give the lang to search content (optional)
      * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
      * @param gap For the facet date, tell the granularity. Default day. (optional, default to day)
      * @param from The start limit date for search in coda format. Default his according of client profile. (optional)
      * @param to The end limit date for search in coda format. Default his now. (optional, default to now)
+     * @param tr Include translated document (optional, default to false)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call topicsUsingGET1Async(String facet, String lang, Integer minDocCount, Integer size, String tz, String gap, String from, String to, final ApiCallback<ReponseTopics> callback) throws ApiException {
+    public com.squareup.okhttp.Call topicsUsingGETAsync(String facet, Integer minDocCount, Integer size, List<String> lang, String tz, String gap, String from, String to, Boolean tr, final ApiCallback<ReponseTopics> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -424,23 +428,23 @@ public class HelpersApi {
             };
         }
 
-        com.squareup.okhttp.Call call = topicsUsingGET1Call(facet, lang, minDocCount, size, tz, gap, from, to, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = topicsUsingGETCall(facet, minDocCount, size, lang, tz, gap, from, to, tr, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<ReponseTopics>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
-    /* Build call for topicsUsingPOST */
-    private com.squareup.okhttp.Call topicsUsingPOSTCall(String facet, Parameters parameters, Integer minDocCount, Integer size, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for topicsUsingPOST1 */
+    private com.squareup.okhttp.Call topicsUsingPOST1Call(String facet, Parameters parameters, Integer minDocCount, Integer size, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = parameters;
         
         // verify the required parameter 'facet' is set
         if (facet == null) {
-            throw new ApiException("Missing the required parameter 'facet' when calling topicsUsingPOST(Async)");
+            throw new ApiException("Missing the required parameter 'facet' when calling topicsUsingPOST1(Async)");
         }
         
         // verify the required parameter 'parameters' is set
         if (parameters == null) {
-            throw new ApiException("Missing the required parameter 'parameters' when calling topicsUsingPOST(Async)");
+            throw new ApiException("Missing the required parameter 'parameters' when calling topicsUsingPOST1(Async)");
         }
         
 
@@ -496,8 +500,8 @@ public class HelpersApi {
      * @return ReponseTopics
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ReponseTopics topicsUsingPOST(String facet, Parameters parameters, Integer minDocCount, Integer size) throws ApiException {
-        ApiResponse<ReponseTopics> resp = topicsUsingPOSTWithHttpInfo(facet, parameters, minDocCount, size);
+    public ReponseTopics topicsUsingPOST1(String facet, Parameters parameters, Integer minDocCount, Integer size) throws ApiException {
+        ApiResponse<ReponseTopics> resp = topicsUsingPOST1WithHttpInfo(facet, parameters, minDocCount, size);
         return resp.getData();
     }
 
@@ -511,8 +515,8 @@ public class HelpersApi {
      * @return ApiResponse&lt;ReponseTopics&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<ReponseTopics> topicsUsingPOSTWithHttpInfo(String facet, Parameters parameters, Integer minDocCount, Integer size) throws ApiException {
-        com.squareup.okhttp.Call call = topicsUsingPOSTCall(facet, parameters, minDocCount, size, null, null);
+    public ApiResponse<ReponseTopics> topicsUsingPOST1WithHttpInfo(String facet, Parameters parameters, Integer minDocCount, Integer size) throws ApiException {
+        com.squareup.okhttp.Call call = topicsUsingPOST1Call(facet, parameters, minDocCount, size, null, null);
         Type localVarReturnType = new TypeToken<ReponseTopics>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
@@ -528,7 +532,7 @@ public class HelpersApi {
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call topicsUsingPOSTAsync(String facet, Parameters parameters, Integer minDocCount, Integer size, final ApiCallback<ReponseTopics> callback) throws ApiException {
+    public com.squareup.okhttp.Call topicsUsingPOST1Async(String facet, Parameters parameters, Integer minDocCount, Integer size, final ApiCallback<ReponseTopics> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -549,7 +553,7 @@ public class HelpersApi {
             };
         }
 
-        com.squareup.okhttp.Call call = topicsUsingPOSTCall(facet, parameters, minDocCount, size, progressListener, progressRequestListener);
+        com.squareup.okhttp.Call call = topicsUsingPOST1Call(facet, parameters, minDocCount, size, progressListener, progressRequestListener);
         Type localVarReturnType = new TypeToken<ReponseTopics>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;

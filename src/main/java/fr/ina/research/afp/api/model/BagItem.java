@@ -23,81 +23,271 @@
  */
 
 
-package fr.ina.research.afp;
+package fr.ina.research.afp.api.model;
 
+import java.util.Objects;
+import com.google.gson.annotations.SerializedName;
+
+import fr.ina.research.afp.api.model.BagPart;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+
+/**
+ * BagItem
+ */
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2022-06-23T14:46:12.287+02:00")
-public class ApiException extends Exception {
-    private int code = 0;
-    private Map<String, List<String>> responseHeaders = null;
-    private String responseBody = null;
+public class BagItem   {
+  @SerializedName("afpshortid")
+  private String afpshortid = null;
 
-    public ApiException() {}
+  @SerializedName("caption")
+  private String caption = null;
 
-    public ApiException(Throwable throwable) {
-        super(throwable);
+  @SerializedName("creator")
+  private String creator = null;
+
+  @SerializedName("medias")
+  private List<BagPart> medias = new ArrayList<BagPart>();
+
+  @SerializedName("newslines")
+  private Object newslines = null;
+
+  @SerializedName("originOfCopy")
+  private String originOfCopy = null;
+
+  @SerializedName("provider")
+  private Object provider = null;
+
+  @SerializedName("source")
+  private Object source = null;
+
+  @SerializedName("uno")
+  private String uno = null;
+
+  public BagItem afpshortid(String afpshortid) {
+    this.afpshortid = afpshortid;
+    return this;
+  }
+
+   /**
+   * Get afpshortid
+   * @return afpshortid
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getAfpshortid() {
+    return afpshortid;
+  }
+
+  public void setAfpshortid(String afpshortid) {
+    this.afpshortid = afpshortid;
+  }
+
+  public BagItem caption(String caption) {
+    this.caption = caption;
+    return this;
+  }
+
+   /**
+   * Get caption
+   * @return caption
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getCaption() {
+    return caption;
+  }
+
+  public void setCaption(String caption) {
+    this.caption = caption;
+  }
+
+  public BagItem creator(String creator) {
+    this.creator = creator;
+    return this;
+  }
+
+   /**
+   * Get creator
+   * @return creator
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getCreator() {
+    return creator;
+  }
+
+  public void setCreator(String creator) {
+    this.creator = creator;
+  }
+
+  public BagItem medias(List<BagPart> medias) {
+    this.medias = medias;
+    return this;
+  }
+
+  public BagItem addMediasItem(BagPart mediasItem) {
+    this.medias.add(mediasItem);
+    return this;
+  }
+
+   /**
+   * Get medias
+   * @return medias
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public List<BagPart> getMedias() {
+    return medias;
+  }
+
+  public void setMedias(List<BagPart> medias) {
+    this.medias = medias;
+  }
+
+  public BagItem newslines(Object newslines) {
+    this.newslines = newslines;
+    return this;
+  }
+
+   /**
+   * Get newslines
+   * @return newslines
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Object getNewslines() {
+    return newslines;
+  }
+
+  public void setNewslines(Object newslines) {
+    this.newslines = newslines;
+  }
+
+  public BagItem originOfCopy(String originOfCopy) {
+    this.originOfCopy = originOfCopy;
+    return this;
+  }
+
+   /**
+   * Get originOfCopy
+   * @return originOfCopy
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getOriginOfCopy() {
+    return originOfCopy;
+  }
+
+  public void setOriginOfCopy(String originOfCopy) {
+    this.originOfCopy = originOfCopy;
+  }
+
+  public BagItem provider(Object provider) {
+    this.provider = provider;
+    return this;
+  }
+
+   /**
+   * Get provider
+   * @return provider
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Object getProvider() {
+    return provider;
+  }
+
+  public void setProvider(Object provider) {
+    this.provider = provider;
+  }
+
+  public BagItem source(Object source) {
+    this.source = source;
+    return this;
+  }
+
+   /**
+   * Get source
+   * @return source
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Object getSource() {
+    return source;
+  }
+
+  public void setSource(Object source) {
+    this.source = source;
+  }
+
+  public BagItem uno(String uno) {
+    this.uno = uno;
+    return this;
+  }
+
+   /**
+   * Get uno
+   * @return uno
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getUno() {
+    return uno;
+  }
+
+  public void setUno(String uno) {
+    this.uno = uno;
+  }
+
+
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public ApiException(String message) {
-        super(message);
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    BagItem bagItem = (BagItem) o;
+    return Objects.equals(this.afpshortid, bagItem.afpshortid) &&
+        Objects.equals(this.caption, bagItem.caption) &&
+        Objects.equals(this.creator, bagItem.creator) &&
+        Objects.equals(this.medias, bagItem.medias) &&
+        Objects.equals(this.newslines, bagItem.newslines) &&
+        Objects.equals(this.originOfCopy, bagItem.originOfCopy) &&
+        Objects.equals(this.provider, bagItem.provider) &&
+        Objects.equals(this.source, bagItem.source) &&
+        Objects.equals(this.uno, bagItem.uno);
+  }
 
-    public ApiException(String message, Throwable throwable, int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        super(message, throwable);
-        this.code = code;
-        this.responseHeaders = responseHeaders;
-        this.responseBody = responseBody;
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(afpshortid, caption, creator, medias, newslines, originOfCopy, provider, source, uno);
+  }
 
-    public ApiException(String message, int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        this(message, (Throwable) null, code, responseHeaders, responseBody);
-    }
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class BagItem {\n");
+    
+    sb.append("    afpshortid: ").append(toIndentedString(afpshortid)).append("\n");
+    sb.append("    caption: ").append(toIndentedString(caption)).append("\n");
+    sb.append("    creator: ").append(toIndentedString(creator)).append("\n");
+    sb.append("    medias: ").append(toIndentedString(medias)).append("\n");
+    sb.append("    newslines: ").append(toIndentedString(newslines)).append("\n");
+    sb.append("    originOfCopy: ").append(toIndentedString(originOfCopy)).append("\n");
+    sb.append("    provider: ").append(toIndentedString(provider)).append("\n");
+    sb.append("    source: ").append(toIndentedString(source)).append("\n");
+    sb.append("    uno: ").append(toIndentedString(uno)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
 
-    public ApiException(String message, Throwable throwable, int code, Map<String, List<String>> responseHeaders) {
-        this(message, throwable, code, responseHeaders, null);
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public ApiException(int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        this((String) null, (Throwable) null, code, responseHeaders, responseBody);
-    }
-
-    public ApiException(int code, String message) {
-        super(message);
-        this.code = code;
-    }
-
-    public ApiException(int code, String message, Map<String, List<String>> responseHeaders, String responseBody) {
-        this(code, message);
-        this.responseHeaders = responseHeaders;
-        this.responseBody = responseBody;
-    }
-
-    /**
-     * Get the HTTP status code.
-     *
-     * @return HTTP status code
-     */
-    public int getCode() {
-        return code;
-    }
-
-    /**
-     * Get the HTTP response headers.
-     *
-     * @return A map of list of string
-     */
-    public Map<String, List<String>> getResponseHeaders() {
-        return responseHeaders;
-    }
-
-    /**
-     * Get the HTTP response body.
-     *
-     * @return Response body in the form of string
-     */
-    public String getResponseBody() {
-        return responseBody;
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 }
+

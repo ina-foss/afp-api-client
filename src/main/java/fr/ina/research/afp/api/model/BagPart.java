@@ -23,81 +23,284 @@
  */
 
 
-package fr.ina.research.afp;
+package fr.ina.research.afp.api.model;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import com.google.gson.annotations.SerializedName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+
+/**
+ * BagPart
+ */
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2022-06-23T14:46:12.287+02:00")
-public class ApiException extends Exception {
-    private int code = 0;
-    private Map<String, List<String>> responseHeaders = null;
-    private String responseBody = null;
+public class BagPart   {
+  @SerializedName("cost")
+  private Integer cost = null;
 
-    public ApiException() {}
+  @SerializedName("duration")
+  private Integer duration = null;
 
-    public ApiException(Throwable throwable) {
-        super(throwable);
+  @SerializedName("height")
+  private Integer height = null;
+
+  @SerializedName("href")
+  private String href = null;
+
+  @SerializedName("link")
+  private String link = null;
+
+  @SerializedName("rendition")
+  private String rendition = null;
+
+  @SerializedName("role")
+  private String role = null;
+
+  @SerializedName("sizeInBytes")
+  private Integer sizeInBytes = null;
+
+  @SerializedName("type")
+  private String type = null;
+
+  @SerializedName("width")
+  private Integer width = null;
+
+  public BagPart cost(Integer cost) {
+    this.cost = cost;
+    return this;
+  }
+
+   /**
+   * Get cost
+   * @return cost
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Integer getCost() {
+    return cost;
+  }
+
+  public void setCost(Integer cost) {
+    this.cost = cost;
+  }
+
+  public BagPart duration(Integer duration) {
+    this.duration = duration;
+    return this;
+  }
+
+   /**
+   * Get duration
+   * @return duration
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Integer getDuration() {
+    return duration;
+  }
+
+  public void setDuration(Integer duration) {
+    this.duration = duration;
+  }
+
+  public BagPart height(Integer height) {
+    this.height = height;
+    return this;
+  }
+
+   /**
+   * Get height
+   * @return height
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Integer getHeight() {
+    return height;
+  }
+
+  public void setHeight(Integer height) {
+    this.height = height;
+  }
+
+  public BagPart href(String href) {
+    this.href = href;
+    return this;
+  }
+
+   /**
+   * Get href
+   * @return href
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getHref() {
+    return href;
+  }
+
+  public void setHref(String href) {
+    this.href = href;
+  }
+
+  public BagPart link(String link) {
+    this.link = link;
+    return this;
+  }
+
+   /**
+   * Get link
+   * @return link
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getLink() {
+    return link;
+  }
+
+  public void setLink(String link) {
+    this.link = link;
+  }
+
+  public BagPart rendition(String rendition) {
+    this.rendition = rendition;
+    return this;
+  }
+
+   /**
+   * Get rendition
+   * @return rendition
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getRendition() {
+    return rendition;
+  }
+
+  public void setRendition(String rendition) {
+    this.rendition = rendition;
+  }
+
+  public BagPart role(String role) {
+    this.role = role;
+    return this;
+  }
+
+   /**
+   * Get role
+   * @return role
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
+  }
+
+  public BagPart sizeInBytes(Integer sizeInBytes) {
+    this.sizeInBytes = sizeInBytes;
+    return this;
+  }
+
+   /**
+   * Get sizeInBytes
+   * @return sizeInBytes
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Integer getSizeInBytes() {
+    return sizeInBytes;
+  }
+
+  public void setSizeInBytes(Integer sizeInBytes) {
+    this.sizeInBytes = sizeInBytes;
+  }
+
+  public BagPart type(String type) {
+    this.type = type;
+    return this;
+  }
+
+   /**
+   * Get type
+   * @return type
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public BagPart width(Integer width) {
+    this.width = width;
+    return this;
+  }
+
+   /**
+   * Get width
+   * @return width
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Integer getWidth() {
+    return width;
+  }
+
+  public void setWidth(Integer width) {
+    this.width = width;
+  }
+
+
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public ApiException(String message) {
-        super(message);
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    BagPart bagPart = (BagPart) o;
+    return Objects.equals(this.cost, bagPart.cost) &&
+        Objects.equals(this.duration, bagPart.duration) &&
+        Objects.equals(this.height, bagPart.height) &&
+        Objects.equals(this.href, bagPart.href) &&
+        Objects.equals(this.link, bagPart.link) &&
+        Objects.equals(this.rendition, bagPart.rendition) &&
+        Objects.equals(this.role, bagPart.role) &&
+        Objects.equals(this.sizeInBytes, bagPart.sizeInBytes) &&
+        Objects.equals(this.type, bagPart.type) &&
+        Objects.equals(this.width, bagPart.width);
+  }
 
-    public ApiException(String message, Throwable throwable, int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        super(message, throwable);
-        this.code = code;
-        this.responseHeaders = responseHeaders;
-        this.responseBody = responseBody;
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hash(cost, duration, height, href, link, rendition, role, sizeInBytes, type, width);
+  }
 
-    public ApiException(String message, int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        this(message, (Throwable) null, code, responseHeaders, responseBody);
-    }
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class BagPart {\n");
+    
+    sb.append("    cost: ").append(toIndentedString(cost)).append("\n");
+    sb.append("    duration: ").append(toIndentedString(duration)).append("\n");
+    sb.append("    height: ").append(toIndentedString(height)).append("\n");
+    sb.append("    href: ").append(toIndentedString(href)).append("\n");
+    sb.append("    link: ").append(toIndentedString(link)).append("\n");
+    sb.append("    rendition: ").append(toIndentedString(rendition)).append("\n");
+    sb.append("    role: ").append(toIndentedString(role)).append("\n");
+    sb.append("    sizeInBytes: ").append(toIndentedString(sizeInBytes)).append("\n");
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
+    sb.append("    width: ").append(toIndentedString(width)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
 
-    public ApiException(String message, Throwable throwable, int code, Map<String, List<String>> responseHeaders) {
-        this(message, throwable, code, responseHeaders, null);
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public ApiException(int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        this((String) null, (Throwable) null, code, responseHeaders, responseBody);
-    }
-
-    public ApiException(int code, String message) {
-        super(message);
-        this.code = code;
-    }
-
-    public ApiException(int code, String message, Map<String, List<String>> responseHeaders, String responseBody) {
-        this(code, message);
-        this.responseHeaders = responseHeaders;
-        this.responseBody = responseBody;
-    }
-
-    /**
-     * Get the HTTP status code.
-     *
-     * @return HTTP status code
-     */
-    public int getCode() {
-        return code;
-    }
-
-    /**
-     * Get the HTTP response headers.
-     *
-     * @return A map of list of string
-     */
-    public Map<String, List<String>> getResponseHeaders() {
-        return responseHeaders;
-    }
-
-    /**
-     * Get the HTTP response body.
-     *
-     * @return Response body in the form of string
-     */
-    public String getResponseBody() {
-        return responseBody;
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 }
+

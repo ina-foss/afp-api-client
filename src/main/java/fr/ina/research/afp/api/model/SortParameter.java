@@ -23,81 +23,122 @@
  */
 
 
-package fr.ina.research.afp;
+package fr.ina.research.afp.api.model;
 
-import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import com.google.gson.annotations.SerializedName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
+
+/**
+ * SortParameter
+ */
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2022-06-23T14:46:12.287+02:00")
-public class ApiException extends Exception {
-    private int code = 0;
-    private Map<String, List<String>> responseHeaders = null;
-    private String responseBody = null;
+public class SortParameter   {
+  @SerializedName("sortField")
+  private String sortField = null;
 
-    public ApiException() {}
+  /**
+   * desc
+   */
+  public enum SortOrderEnum {
+    @SerializedName("asc")
+    ASC("asc"),
+    
+    @SerializedName("desc")
+    DESC("desc");
 
-    public ApiException(Throwable throwable) {
-        super(throwable);
+    private String value;
+
+    SortOrderEnum(String value) {
+      this.value = value;
     }
 
-    public ApiException(String message) {
-        super(message);
+    @Override
+    public String toString() {
+      return String.valueOf(value);
     }
+  }
 
-    public ApiException(String message, Throwable throwable, int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        super(message, throwable);
-        this.code = code;
-        this.responseHeaders = responseHeaders;
-        this.responseBody = responseBody;
-    }
+  @SerializedName("sortOrder")
+  private SortOrderEnum sortOrder = null;
 
-    public ApiException(String message, int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        this(message, (Throwable) null, code, responseHeaders, responseBody);
-    }
+  public SortParameter sortField(String sortField) {
+    this.sortField = sortField;
+    return this;
+  }
 
-    public ApiException(String message, Throwable throwable, int code, Map<String, List<String>> responseHeaders) {
-        this(message, throwable, code, responseHeaders, null);
-    }
+   /**
+   * Get sortField
+   * @return sortField
+  **/
+  @ApiModelProperty(example = "published", required = true, value = "")
+  public String getSortField() {
+    return sortField;
+  }
 
-    public ApiException(int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        this((String) null, (Throwable) null, code, responseHeaders, responseBody);
-    }
+  public void setSortField(String sortField) {
+    this.sortField = sortField;
+  }
 
-    public ApiException(int code, String message) {
-        super(message);
-        this.code = code;
-    }
+  public SortParameter sortOrder(SortOrderEnum sortOrder) {
+    this.sortOrder = sortOrder;
+    return this;
+  }
 
-    public ApiException(int code, String message, Map<String, List<String>> responseHeaders, String responseBody) {
-        this(code, message);
-        this.responseHeaders = responseHeaders;
-        this.responseBody = responseBody;
-    }
+   /**
+   * desc
+   * @return sortOrder
+  **/
+  @ApiModelProperty(example = "null", value = "desc")
+  public SortOrderEnum getSortOrder() {
+    return sortOrder;
+  }
 
-    /**
-     * Get the HTTP status code.
-     *
-     * @return HTTP status code
-     */
-    public int getCode() {
-        return code;
-    }
+  public void setSortOrder(SortOrderEnum sortOrder) {
+    this.sortOrder = sortOrder;
+  }
 
-    /**
-     * Get the HTTP response headers.
-     *
-     * @return A map of list of string
-     */
-    public Map<String, List<String>> getResponseHeaders() {
-        return responseHeaders;
-    }
 
-    /**
-     * Get the HTTP response body.
-     *
-     * @return Response body in the form of string
-     */
-    public String getResponseBody() {
-        return responseBody;
+  @Override
+  public boolean equals(java.lang.Object o) {
+    if (this == o) {
+      return true;
     }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SortParameter sortParameter = (SortParameter) o;
+    return Objects.equals(this.sortField, sortParameter.sortField) &&
+        Objects.equals(this.sortOrder, sortParameter.sortOrder);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(sortField, sortOrder);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class SortParameter {\n");
+    
+    sb.append("    sortField: ").append(toIndentedString(sortField)).append("\n");
+    sb.append("    sortOrder: ").append(toIndentedString(sortOrder)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 }
+

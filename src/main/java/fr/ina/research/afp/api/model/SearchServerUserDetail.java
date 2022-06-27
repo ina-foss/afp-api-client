@@ -27,98 +27,309 @@ package fr.ina.research.afp.api.model;
 
 import java.util.Objects;
 import com.google.gson.annotations.SerializedName;
+
+import fr.ina.research.afp.api.model.Parameters;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.joda.time.DateTime;
+
 
 /**
- * Describe the error reason
+ * SearchServerUserDetail
  */
-@ApiModel(description = "Describe the error reason")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2022-06-23T14:46:12.287+02:00")
-public class Error   {
-  @SerializedName("code")
-  private Integer code = null;
+public class SearchServerUserDetail   {
+  @SerializedName("activationKey")
+  private String activationKey = null;
 
-  @SerializedName("message")
-  private String message = null;
+  @SerializedName("additionalProperties")
+  private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-  @SerializedName("subcode")
-  private Integer subcode = null;
+  @SerializedName("authorities")
+  private List<String> authorities = new ArrayList<String>();
 
-  @SerializedName("type")
-  private String type = null;
+  @SerializedName("clientId")
+  private List<String> clientId = new ArrayList<String>();
 
-  public Error code(Integer code) {
-    this.code = code;
+  @SerializedName("created")
+  private DateTime created = null;
+
+  @SerializedName("email")
+  private String email = null;
+
+  @SerializedName("enabled")
+  private Boolean enabled = null;
+
+  @SerializedName("expires")
+  private DateTime expires = null;
+
+  @SerializedName("filters")
+  private Parameters filters = null;
+
+  @SerializedName("password")
+  private String password = null;
+
+  @SerializedName("resetPasswordKey")
+  private String resetPasswordKey = null;
+
+  @SerializedName("updated")
+  private DateTime updated = null;
+
+  @SerializedName("username")
+  private String username = null;
+
+  public SearchServerUserDetail activationKey(String activationKey) {
+    this.activationKey = activationKey;
     return this;
   }
 
    /**
-   * Get code
-   * @return code
+   * Get activationKey
+   * @return activationKey
   **/
   @ApiModelProperty(example = "null", value = "")
-  public Integer getCode() {
-    return code;
+  public String getActivationKey() {
+    return activationKey;
   }
 
-  public void setCode(Integer code) {
-    this.code = code;
+  public void setActivationKey(String activationKey) {
+    this.activationKey = activationKey;
   }
 
-  public Error message(String message) {
-    this.message = message;
+  public SearchServerUserDetail additionalProperties(Map<String, Object> additionalProperties) {
+    this.additionalProperties = additionalProperties;
+    return this;
+  }
+
+  public SearchServerUserDetail putAdditionalPropertiesItem(String key, Object additionalPropertiesItem) {
+    this.additionalProperties.put(key, additionalPropertiesItem);
     return this;
   }
 
    /**
-   * Get message
-   * @return message
+   * Get additionalProperties
+   * @return additionalProperties
   **/
   @ApiModelProperty(example = "null", value = "")
-  public String getMessage() {
-    return message;
+  public Map<String, Object> getAdditionalProperties() {
+    return additionalProperties;
   }
 
-  public void setMessage(String message) {
-    this.message = message;
+  public void setAdditionalProperties(Map<String, Object> additionalProperties) {
+    this.additionalProperties = additionalProperties;
   }
 
-  public Error subcode(Integer subcode) {
-    this.subcode = subcode;
+  public SearchServerUserDetail authorities(List<String> authorities) {
+    this.authorities = authorities;
+    return this;
+  }
+
+  public SearchServerUserDetail addAuthoritiesItem(String authoritiesItem) {
+    this.authorities.add(authoritiesItem);
     return this;
   }
 
    /**
-   * Get subcode
-   * @return subcode
+   * Get authorities
+   * @return authorities
   **/
   @ApiModelProperty(example = "null", value = "")
-  public Integer getSubcode() {
-    return subcode;
+  public List<String> getAuthorities() {
+    return authorities;
   }
 
-  public void setSubcode(Integer subcode) {
-    this.subcode = subcode;
+  public void setAuthorities(List<String> authorities) {
+    this.authorities = authorities;
   }
 
-  public Error type(String type) {
-    this.type = type;
+  public SearchServerUserDetail clientId(List<String> clientId) {
+    this.clientId = clientId;
+    return this;
+  }
+
+  public SearchServerUserDetail addClientIdItem(String clientIdItem) {
+    this.clientId.add(clientIdItem);
     return this;
   }
 
    /**
-   * Get type
-   * @return type
+   * Get clientId
+   * @return clientId
   **/
   @ApiModelProperty(example = "null", value = "")
-  public String getType() {
-    return type;
+  public List<String> getClientId() {
+    return clientId;
   }
 
-  public void setType(String type) {
-    this.type = type;
+  public void setClientId(List<String> clientId) {
+    this.clientId = clientId;
+  }
+
+  public SearchServerUserDetail created(DateTime created) {
+    this.created = created;
+    return this;
+  }
+
+   /**
+   * Get created
+   * @return created
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public DateTime getCreated() {
+    return created;
+  }
+
+  public void setCreated(DateTime created) {
+    this.created = created;
+  }
+
+  public SearchServerUserDetail email(String email) {
+    this.email = email;
+    return this;
+  }
+
+   /**
+   * Get email
+   * @return email
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public SearchServerUserDetail enabled(Boolean enabled) {
+    this.enabled = enabled;
+    return this;
+  }
+
+   /**
+   * Get enabled
+   * @return enabled
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Boolean getEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(Boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  public SearchServerUserDetail expires(DateTime expires) {
+    this.expires = expires;
+    return this;
+  }
+
+   /**
+   * Get expires
+   * @return expires
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public DateTime getExpires() {
+    return expires;
+  }
+
+  public void setExpires(DateTime expires) {
+    this.expires = expires;
+  }
+
+  public SearchServerUserDetail filters(Parameters filters) {
+    this.filters = filters;
+    return this;
+  }
+
+   /**
+   * Get filters
+   * @return filters
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public Parameters getFilters() {
+    return filters;
+  }
+
+  public void setFilters(Parameters filters) {
+    this.filters = filters;
+  }
+
+  public SearchServerUserDetail password(String password) {
+    this.password = password;
+    return this;
+  }
+
+   /**
+   * Get password
+   * @return password
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public SearchServerUserDetail resetPasswordKey(String resetPasswordKey) {
+    this.resetPasswordKey = resetPasswordKey;
+    return this;
+  }
+
+   /**
+   * Get resetPasswordKey
+   * @return resetPasswordKey
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getResetPasswordKey() {
+    return resetPasswordKey;
+  }
+
+  public void setResetPasswordKey(String resetPasswordKey) {
+    this.resetPasswordKey = resetPasswordKey;
+  }
+
+  public SearchServerUserDetail updated(DateTime updated) {
+    this.updated = updated;
+    return this;
+  }
+
+   /**
+   * Get updated
+   * @return updated
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public DateTime getUpdated() {
+    return updated;
+  }
+
+  public void setUpdated(DateTime updated) {
+    this.updated = updated;
+  }
+
+  public SearchServerUserDetail username(String username) {
+    this.username = username;
+    return this;
+  }
+
+   /**
+   * Get username
+   * @return username
+  **/
+  @ApiModelProperty(example = "null", value = "")
+  public String getUsername() {
+    return username;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
   }
 
 
@@ -130,27 +341,45 @@ public class Error   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Error error = (Error) o;
-    return Objects.equals(this.code, error.code) &&
-        Objects.equals(this.message, error.message) &&
-        Objects.equals(this.subcode, error.subcode) &&
-        Objects.equals(this.type, error.type);
+    SearchServerUserDetail searchServerUserDetail = (SearchServerUserDetail) o;
+    return Objects.equals(this.activationKey, searchServerUserDetail.activationKey) &&
+        Objects.equals(this.additionalProperties, searchServerUserDetail.additionalProperties) &&
+        Objects.equals(this.authorities, searchServerUserDetail.authorities) &&
+        Objects.equals(this.clientId, searchServerUserDetail.clientId) &&
+        Objects.equals(this.created, searchServerUserDetail.created) &&
+        Objects.equals(this.email, searchServerUserDetail.email) &&
+        Objects.equals(this.enabled, searchServerUserDetail.enabled) &&
+        Objects.equals(this.expires, searchServerUserDetail.expires) &&
+        Objects.equals(this.filters, searchServerUserDetail.filters) &&
+        Objects.equals(this.password, searchServerUserDetail.password) &&
+        Objects.equals(this.resetPasswordKey, searchServerUserDetail.resetPasswordKey) &&
+        Objects.equals(this.updated, searchServerUserDetail.updated) &&
+        Objects.equals(this.username, searchServerUserDetail.username);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(code, message, subcode, type);
+    return Objects.hash(activationKey, additionalProperties, authorities, clientId, created, email, enabled, expires, filters, password, resetPasswordKey, updated, username);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class Error {\n");
+    sb.append("class SearchServerUserDetail {\n");
     
-    sb.append("    code: ").append(toIndentedString(code)).append("\n");
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
-    sb.append("    subcode: ").append(toIndentedString(subcode)).append("\n");
-    sb.append("    type: ").append(toIndentedString(type)).append("\n");
+    sb.append("    activationKey: ").append(toIndentedString(activationKey)).append("\n");
+    sb.append("    additionalProperties: ").append(toIndentedString(additionalProperties)).append("\n");
+    sb.append("    authorities: ").append(toIndentedString(authorities)).append("\n");
+    sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
+    sb.append("    created: ").append(toIndentedString(created)).append("\n");
+    sb.append("    email: ").append(toIndentedString(email)).append("\n");
+    sb.append("    enabled: ").append(toIndentedString(enabled)).append("\n");
+    sb.append("    expires: ").append(toIndentedString(expires)).append("\n");
+    sb.append("    filters: ").append(toIndentedString(filters)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
+    sb.append("    resetPasswordKey: ").append(toIndentedString(resetPasswordKey)).append("\n");
+    sb.append("    updated: ").append(toIndentedString(updated)).append("\n");
+    sb.append("    username: ").append(toIndentedString(username)).append("\n");
     sb.append("}");
     return sb.toString();
   }

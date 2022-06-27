@@ -42,17 +42,19 @@ import fr.ina.research.afp.Configuration;
 import fr.ina.research.afp.Pair;
 import fr.ina.research.afp.ProgressRequestBody;
 import fr.ina.research.afp.ProgressResponseBody;
+import fr.ina.research.afp.api.model.AdminNamedFilterResponse;
+import fr.ina.research.afp.api.model.AdminNamedFiltersResponse;
+import fr.ina.research.afp.api.model.AdminResponse;
 import fr.ina.research.afp.api.model.Parameters;
-import fr.ina.research.afp.api.model.Result;
 
-public class SearchApi {
+public class UserNamedFiltersApi {
     private ApiClient apiClient;
 
-    public SearchApi() {
+    public UserNamedFiltersApi() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public SearchApi(ApiClient apiClient) {
+    public UserNamedFiltersApi(ApiClient apiClient) {
         this.apiClient = apiClient;
     }
 
@@ -64,200 +66,27 @@ public class SearchApi {
         this.apiClient = apiClient;
     }
 
-    /* Build call for searchUsingGET1 */
-    private com.squareup.okhttp.Call searchUsingGET1Call(String wt, List<String> lang, Integer startat, Integer size, List<String> q, List<String> fq, List<String> f, List<String> fl, Boolean c, String sort, String tz, String gap, String from, String to, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = null;
+    /* Build call for addUsingPOST */
+    private com.squareup.okhttp.Call addUsingPOSTCall(String name, Parameters parameter, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = parameter;
         
-        // verify the required parameter 'wt' is set
-        if (wt == null) {
-            throw new ApiException("Missing the required parameter 'wt' when calling searchUsingGET1(Async)");
+        // verify the required parameter 'name' is set
+        if (name == null) {
+            throw new ApiException("Missing the required parameter 'name' when calling addUsingPOST(Async)");
+        }
+        
+        // verify the required parameter 'parameter' is set
+        if (parameter == null) {
+            throw new ApiException("Missing the required parameter 'parameter' when calling addUsingPOST(Async)");
         }
         
 
         // create path and map variables
-        String localVarPath = "/v1/api/search".replaceAll("\\{format\\}","json");
+        String localVarPath = "/v1/user/filter/add".replaceAll("\\{format\\}","json");
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (lang != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "lang", lang));
-        if (startat != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "startat", startat));
-        if (size != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "size", size));
-        if (q != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "q", q));
-        if (fq != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "fq", fq));
-        if (f != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "f", f));
-        if (fl != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "fl", fl));
-        if (c != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "c", c));
-        if (sort != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "sort", sort));
-        if (tz != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "tz", tz));
-        if (gap != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "gap", gap));
-        if (from != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "from", from));
-        if (to != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "to", to));
-        if (wt != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "wt", wt));
-
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-
-        final String[] localVarAccepts = {
-            "application/xml", "application/json"
-        };
-        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
-
-        final String[] localVarContentTypes = {
-            "*_/_*"
-        };
-        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        if(progressListener != null) {
-            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
-                @Override
-                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
-                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
-                    return originalResponse.newBuilder()
-                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
-                    .build();
-                }
-            });
-        }
-
-        String[] localVarAuthNames = new String[] { "oauth2" };
-        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
-    }
-
-    /**
-     * Search operation
-     * Search some news items by query
-     * @param wt The desired newsItem link format (required)
-     * @param lang Give the lang to search content (optional)
-     * @param startat Return news item later than this startat (optional, default to 0)
-     * @param size The number of responses (optional, default to 50)
-     * @param q The query parameter to search something as \&quot;field1:value,field2:value....\&quot;, default value search on all field *:* (optional, default to *:*)
-     * @param fq The facet query parameter to search thru a facet field as \&quot;facet1:value,facet2:value....\&quot;, default is empty (optional)
-     * @param f Tell which facets must be returned like as \&quot;facetName\&quot;, by default no facet will be returned. Repeatable (optional)
-     * @param fl Tell which fields must be returned each news item record, by default all fields will be returned. Repeatable (optional)
-     * @param c Tell if word clustering must calculated, by default no word cluster (optional, default to false)
-     * @param sort Tell on which field the result must be sorted, ascending or descending, by default it&#39;s \&quot;published desc\&quot;. All records could be sorted. (optional, default to published desc)
-     * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
-     * @param gap For the facet date, tell the granularity. Default day. (optional, default to day)
-     * @param from The start limit date for search in coda format. Default his according of client profile. (optional)
-     * @param to The end limit date for search in coda format. Default his now. (optional, default to now)
-     * @return Result
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public Result searchUsingGET1(String wt, List<String> lang, Integer startat, Integer size, List<String> q, List<String> fq, List<String> f, List<String> fl, Boolean c, String sort, String tz, String gap, String from, String to) throws ApiException {
-        ApiResponse<Result> resp = searchUsingGET1WithHttpInfo(wt, lang, startat, size, q, fq, f, fl, c, sort, tz, gap, from, to);
-        return resp.getData();
-    }
-
-    /**
-     * Search operation
-     * Search some news items by query
-     * @param wt The desired newsItem link format (required)
-     * @param lang Give the lang to search content (optional)
-     * @param startat Return news item later than this startat (optional, default to 0)
-     * @param size The number of responses (optional, default to 50)
-     * @param q The query parameter to search something as \&quot;field1:value,field2:value....\&quot;, default value search on all field *:* (optional, default to *:*)
-     * @param fq The facet query parameter to search thru a facet field as \&quot;facet1:value,facet2:value....\&quot;, default is empty (optional)
-     * @param f Tell which facets must be returned like as \&quot;facetName\&quot;, by default no facet will be returned. Repeatable (optional)
-     * @param fl Tell which fields must be returned each news item record, by default all fields will be returned. Repeatable (optional)
-     * @param c Tell if word clustering must calculated, by default no word cluster (optional, default to false)
-     * @param sort Tell on which field the result must be sorted, ascending or descending, by default it&#39;s \&quot;published desc\&quot;. All records could be sorted. (optional, default to published desc)
-     * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
-     * @param gap For the facet date, tell the granularity. Default day. (optional, default to day)
-     * @param from The start limit date for search in coda format. Default his according of client profile. (optional)
-     * @param to The end limit date for search in coda format. Default his now. (optional, default to now)
-     * @return ApiResponse&lt;Result&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     */
-    public ApiResponse<Result> searchUsingGET1WithHttpInfo(String wt, List<String> lang, Integer startat, Integer size, List<String> q, List<String> fq, List<String> f, List<String> fl, Boolean c, String sort, String tz, String gap, String from, String to) throws ApiException {
-        com.squareup.okhttp.Call call = searchUsingGET1Call(wt, lang, startat, size, q, fq, f, fl, c, sort, tz, gap, from, to, null, null);
-        Type localVarReturnType = new TypeToken<Result>(){}.getType();
-        return apiClient.execute(call, localVarReturnType);
-    }
-
-    /**
-     * Search operation (asynchronously)
-     * Search some news items by query
-     * @param wt The desired newsItem link format (required)
-     * @param lang Give the lang to search content (optional)
-     * @param startat Return news item later than this startat (optional, default to 0)
-     * @param size The number of responses (optional, default to 50)
-     * @param q The query parameter to search something as \&quot;field1:value,field2:value....\&quot;, default value search on all field *:* (optional, default to *:*)
-     * @param fq The facet query parameter to search thru a facet field as \&quot;facet1:value,facet2:value....\&quot;, default is empty (optional)
-     * @param f Tell which facets must be returned like as \&quot;facetName\&quot;, by default no facet will be returned. Repeatable (optional)
-     * @param fl Tell which fields must be returned each news item record, by default all fields will be returned. Repeatable (optional)
-     * @param c Tell if word clustering must calculated, by default no word cluster (optional, default to false)
-     * @param sort Tell on which field the result must be sorted, ascending or descending, by default it&#39;s \&quot;published desc\&quot;. All records could be sorted. (optional, default to published desc)
-     * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
-     * @param gap For the facet date, tell the granularity. Default day. (optional, default to day)
-     * @param from The start limit date for search in coda format. Default his according of client profile. (optional)
-     * @param to The end limit date for search in coda format. Default his now. (optional, default to now)
-     * @param callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     */
-    public com.squareup.okhttp.Call searchUsingGET1Async(String wt, List<String> lang, Integer startat, Integer size, List<String> q, List<String> fq, List<String> f, List<String> fl, Boolean c, String sort, String tz, String gap, String from, String to, final ApiCallback<Result> callback) throws ApiException {
-
-        ProgressResponseBody.ProgressListener progressListener = null;
-        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
-
-        if (callback != null) {
-            progressListener = new ProgressResponseBody.ProgressListener() {
-                @Override
-                public void update(long bytesRead, long contentLength, boolean done) {
-                    callback.onDownloadProgress(bytesRead, contentLength, done);
-                }
-            };
-
-            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
-                @Override
-                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
-                    callback.onUploadProgress(bytesWritten, contentLength, done);
-                }
-            };
-        }
-
-        com.squareup.okhttp.Call call = searchUsingGET1Call(wt, lang, startat, size, q, fq, f, fl, c, sort, tz, gap, from, to, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<Result>(){}.getType();
-        apiClient.executeAsync(call, localVarReturnType, callback);
-        return call;
-    }
-    /* Build call for searchUsingPOST1 */
-    private com.squareup.okhttp.Call searchUsingPOST1Call(Parameters parameters, String wt, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
-        Object localVarPostBody = parameters;
-        
-        // verify the required parameter 'parameters' is set
-        if (parameters == null) {
-            throw new ApiException("Missing the required parameter 'parameters' when calling searchUsingPOST1(Async)");
-        }
-        
-        // verify the required parameter 'wt' is set
-        if (wt == null) {
-            throw new ApiException("Missing the required parameter 'wt' when calling searchUsingPOST1(Async)");
-        }
-        
-
-        // create path and map variables
-        String localVarPath = "/v1/api/search".replaceAll("\\{format\\}","json");
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (wt != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "wt", wt));
+        if (name != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "name", name));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -292,42 +121,42 @@ public class SearchApi {
     }
 
     /**
-     * Search operation
-     * Search some news items by query
-     * @param parameters parameters (required)
-     * @param wt The desired newsItem link format (required)
-     * @return Result
+     * Add a user named filter
+     * This call allows to create a named filter to be reusable later
+     * @param name The filter name (required)
+     * @param parameter parameter (required)
+     * @return AdminNamedFilterResponse
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public Result searchUsingPOST1(Parameters parameters, String wt) throws ApiException {
-        ApiResponse<Result> resp = searchUsingPOST1WithHttpInfo(parameters, wt);
+    public AdminNamedFilterResponse addUsingPOST(String name, Parameters parameter) throws ApiException {
+        ApiResponse<AdminNamedFilterResponse> resp = addUsingPOSTWithHttpInfo(name, parameter);
         return resp.getData();
     }
 
     /**
-     * Search operation
-     * Search some news items by query
-     * @param parameters parameters (required)
-     * @param wt The desired newsItem link format (required)
-     * @return ApiResponse&lt;Result&gt;
+     * Add a user named filter
+     * This call allows to create a named filter to be reusable later
+     * @param name The filter name (required)
+     * @param parameter parameter (required)
+     * @return ApiResponse&lt;AdminNamedFilterResponse&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Result> searchUsingPOST1WithHttpInfo(Parameters parameters, String wt) throws ApiException {
-        com.squareup.okhttp.Call call = searchUsingPOST1Call(parameters, wt, null, null);
-        Type localVarReturnType = new TypeToken<Result>(){}.getType();
+    public ApiResponse<AdminNamedFilterResponse> addUsingPOSTWithHttpInfo(String name, Parameters parameter) throws ApiException {
+        com.squareup.okhttp.Call call = addUsingPOSTCall(name, parameter, null, null);
+        Type localVarReturnType = new TypeToken<AdminNamedFilterResponse>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
     /**
-     * Search operation (asynchronously)
-     * Search some news items by query
-     * @param parameters parameters (required)
-     * @param wt The desired newsItem link format (required)
+     * Add a user named filter (asynchronously)
+     * This call allows to create a named filter to be reusable later
+     * @param name The filter name (required)
+     * @param parameter parameter (required)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call searchUsingPOST1Async(Parameters parameters, String wt, final ApiCallback<Result> callback) throws ApiException {
+    public com.squareup.okhttp.Call addUsingPOSTAsync(String name, Parameters parameter, final ApiCallback<AdminNamedFilterResponse> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -348,38 +177,20 @@ public class SearchApi {
             };
         }
 
-        com.squareup.okhttp.Call call = searchUsingPOST1Call(parameters, wt, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<Result>(){}.getType();
+        com.squareup.okhttp.Call call = addUsingPOSTCall(name, parameter, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<AdminNamedFilterResponse>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }
-    /* Build call for searchWithNamedFilterUsingGET1 */
-    private com.squareup.okhttp.Call searchWithNamedFilterUsingGET1Call(String filter, String wt, Integer startat, Integer size, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for allUsingGET1 */
+    private com.squareup.okhttp.Call allUsingGET1Call(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
-        
-        // verify the required parameter 'filter' is set
-        if (filter == null) {
-            throw new ApiException("Missing the required parameter 'filter' when calling searchWithNamedFilterUsingGET1(Async)");
-        }
-        
-        // verify the required parameter 'wt' is set
-        if (wt == null) {
-            throw new ApiException("Missing the required parameter 'wt' when calling searchWithNamedFilterUsingGET1(Async)");
-        }
         
 
         // create path and map variables
-        String localVarPath = "/v1/api/search_with_filter".replaceAll("\\{format\\}","json");
+        String localVarPath = "/v1/user/filter/all".replaceAll("\\{format\\}","json");
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (filter != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "filter", filter));
-        if (startat != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "startat", startat));
-        if (size != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "size", size));
-        if (wt != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "wt", wt));
 
         Map<String, String> localVarHeaderParams = new HashMap<String, String>();
 
@@ -414,48 +225,36 @@ public class SearchApi {
     }
 
     /**
-     * Search operation with named filter
-     * Search some news items by user named filter
-     * @param filter The name of the user filter to query (required)
-     * @param wt The desired newsItem link format (required)
-     * @param startat Return news item later than this startat (optional, default to 0)
-     * @param size The number of responses (optional, default to 50)
-     * @return Result
+     * List all user named filter
+     * This call retrieve the list of all user named filter available
+     * @return AdminNamedFiltersResponse
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public Result searchWithNamedFilterUsingGET1(String filter, String wt, Integer startat, Integer size) throws ApiException {
-        ApiResponse<Result> resp = searchWithNamedFilterUsingGET1WithHttpInfo(filter, wt, startat, size);
+    public AdminNamedFiltersResponse allUsingGET1() throws ApiException {
+        ApiResponse<AdminNamedFiltersResponse> resp = allUsingGET1WithHttpInfo();
         return resp.getData();
     }
 
     /**
-     * Search operation with named filter
-     * Search some news items by user named filter
-     * @param filter The name of the user filter to query (required)
-     * @param wt The desired newsItem link format (required)
-     * @param startat Return news item later than this startat (optional, default to 0)
-     * @param size The number of responses (optional, default to 50)
-     * @return ApiResponse&lt;Result&gt;
+     * List all user named filter
+     * This call retrieve the list of all user named filter available
+     * @return ApiResponse&lt;AdminNamedFiltersResponse&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Result> searchWithNamedFilterUsingGET1WithHttpInfo(String filter, String wt, Integer startat, Integer size) throws ApiException {
-        com.squareup.okhttp.Call call = searchWithNamedFilterUsingGET1Call(filter, wt, startat, size, null, null);
-        Type localVarReturnType = new TypeToken<Result>(){}.getType();
+    public ApiResponse<AdminNamedFiltersResponse> allUsingGET1WithHttpInfo() throws ApiException {
+        com.squareup.okhttp.Call call = allUsingGET1Call(null, null);
+        Type localVarReturnType = new TypeToken<AdminNamedFiltersResponse>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
     /**
-     * Search operation with named filter (asynchronously)
-     * Search some news items by user named filter
-     * @param filter The name of the user filter to query (required)
-     * @param wt The desired newsItem link format (required)
-     * @param startat Return news item later than this startat (optional, default to 0)
-     * @param size The number of responses (optional, default to 50)
+     * List all user named filter (asynchronously)
+     * This call retrieve the list of all user named filter available
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call searchWithNamedFilterUsingGET1Async(String filter, String wt, Integer startat, Integer size, final ApiCallback<Result> callback) throws ApiException {
+    public com.squareup.okhttp.Call allUsingGET1Async(final ApiCallback<AdminNamedFiltersResponse> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -476,8 +275,340 @@ public class SearchApi {
             };
         }
 
-        com.squareup.okhttp.Call call = searchWithNamedFilterUsingGET1Call(filter, wt, startat, size, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<Result>(){}.getType();
+        com.squareup.okhttp.Call call = allUsingGET1Call(progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<AdminNamedFiltersResponse>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+    /* Build call for deleteUsingGET1 */
+    private com.squareup.okhttp.Call deleteUsingGET1Call(String name, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+        
+        // verify the required parameter 'name' is set
+        if (name == null) {
+            throw new ApiException("Missing the required parameter 'name' when calling deleteUsingGET1(Async)");
+        }
+        
+
+        // create path and map variables
+        String localVarPath = "/v1/user/filter/delete".replaceAll("\\{format\\}","json");
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        if (name != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "name", name));
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/xml", "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+            "*_/_*"
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "oauth2" };
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    /**
+     * Delete a user named filter
+     * This call allows to delete a named filter
+     * @param name The filter name (required)
+     * @return AdminResponse
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public AdminResponse deleteUsingGET1(String name) throws ApiException {
+        ApiResponse<AdminResponse> resp = deleteUsingGET1WithHttpInfo(name);
+        return resp.getData();
+    }
+
+    /**
+     * Delete a user named filter
+     * This call allows to delete a named filter
+     * @param name The filter name (required)
+     * @return ApiResponse&lt;AdminResponse&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ApiResponse<AdminResponse> deleteUsingGET1WithHttpInfo(String name) throws ApiException {
+        com.squareup.okhttp.Call call = deleteUsingGET1Call(name, null, null);
+        Type localVarReturnType = new TypeToken<AdminResponse>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     * Delete a user named filter (asynchronously)
+     * This call allows to delete a named filter
+     * @param name The filter name (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     */
+    public com.squareup.okhttp.Call deleteUsingGET1Async(String name, final ApiCallback<AdminResponse> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = deleteUsingGET1Call(name, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<AdminResponse>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+    /* Build call for getUsingGET1 */
+    private com.squareup.okhttp.Call getUsingGET1Call(String name, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+        
+        // verify the required parameter 'name' is set
+        if (name == null) {
+            throw new ApiException("Missing the required parameter 'name' when calling getUsingGET1(Async)");
+        }
+        
+
+        // create path and map variables
+        String localVarPath = "/v1/user/filter/get".replaceAll("\\{format\\}","json");
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        if (name != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "name", name));
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/xml", "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+            "*_/_*"
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "oauth2" };
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    /**
+     * Get a user named filter
+     * This call allows to retrieve a named filter
+     * @param name The filter name (required)
+     * @return AdminNamedFilterResponse
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public AdminNamedFilterResponse getUsingGET1(String name) throws ApiException {
+        ApiResponse<AdminNamedFilterResponse> resp = getUsingGET1WithHttpInfo(name);
+        return resp.getData();
+    }
+
+    /**
+     * Get a user named filter
+     * This call allows to retrieve a named filter
+     * @param name The filter name (required)
+     * @return ApiResponse&lt;AdminNamedFilterResponse&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ApiResponse<AdminNamedFilterResponse> getUsingGET1WithHttpInfo(String name) throws ApiException {
+        com.squareup.okhttp.Call call = getUsingGET1Call(name, null, null);
+        Type localVarReturnType = new TypeToken<AdminNamedFilterResponse>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     * Get a user named filter (asynchronously)
+     * This call allows to retrieve a named filter
+     * @param name The filter name (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     */
+    public com.squareup.okhttp.Call getUsingGET1Async(String name, final ApiCallback<AdminNamedFilterResponse> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = getUsingGET1Call(name, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<AdminNamedFilterResponse>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
+    }
+    /* Build call for updateUsingPOST1 */
+    private com.squareup.okhttp.Call updateUsingPOST1Call(String name, Parameters parameter, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = parameter;
+        
+        // verify the required parameter 'name' is set
+        if (name == null) {
+            throw new ApiException("Missing the required parameter 'name' when calling updateUsingPOST1(Async)");
+        }
+        
+        // verify the required parameter 'parameter' is set
+        if (parameter == null) {
+            throw new ApiException("Missing the required parameter 'parameter' when calling updateUsingPOST1(Async)");
+        }
+        
+
+        // create path and map variables
+        String localVarPath = "/v1/user/filter/update".replaceAll("\\{format\\}","json");
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        if (name != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "name", name));
+
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/xml", "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+            "application/xml", "application/json"
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "oauth2" };
+        return apiClient.buildCall(localVarPath, "POST", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
+    }
+
+    /**
+     * Update a user named filter
+     * This call allows to create a common named filter to be reusable later
+     * @param name The filter name (required)
+     * @param parameter parameter (required)
+     * @return AdminResponse
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public AdminResponse updateUsingPOST1(String name, Parameters parameter) throws ApiException {
+        ApiResponse<AdminResponse> resp = updateUsingPOST1WithHttpInfo(name, parameter);
+        return resp.getData();
+    }
+
+    /**
+     * Update a user named filter
+     * This call allows to create a common named filter to be reusable later
+     * @param name The filter name (required)
+     * @param parameter parameter (required)
+     * @return ApiResponse&lt;AdminResponse&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     */
+    public ApiResponse<AdminResponse> updateUsingPOST1WithHttpInfo(String name, Parameters parameter) throws ApiException {
+        com.squareup.okhttp.Call call = updateUsingPOST1Call(name, parameter, null, null);
+        Type localVarReturnType = new TypeToken<AdminResponse>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
+    }
+
+    /**
+     * Update a user named filter (asynchronously)
+     * This call allows to create a common named filter to be reusable later
+     * @param name The filter name (required)
+     * @param parameter parameter (required)
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     */
+    public com.squareup.okhttp.Call updateUsingPOST1Async(String name, Parameters parameter, final ApiCallback<AdminResponse> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = updateUsingPOST1Call(name, parameter, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<AdminResponse>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }

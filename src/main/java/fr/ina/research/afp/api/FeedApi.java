@@ -42,16 +42,15 @@ import fr.ina.research.afp.Configuration;
 import fr.ina.research.afp.Pair;
 import fr.ina.research.afp.ProgressRequestBody;
 import fr.ina.research.afp.ProgressResponseBody;
-import fr.ina.research.afp.api.model.Result;
 
-public class LatestApi {
+public class FeedApi {
     private ApiClient apiClient;
 
-    public LatestApi() {
+    public FeedApi() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public LatestApi(ApiClient apiClient) {
+    public FeedApi(ApiClient apiClient) {
         this.apiClient = apiClient;
     }
 
@@ -63,26 +62,38 @@ public class LatestApi {
         this.apiClient = apiClient;
     }
 
-    /* Build call for latestUsingGET */
-    private com.squareup.okhttp.Call latestUsingGETCall(String wt, List<String> lang, String tz, Boolean tr, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+    /* Build call for feedUsingGET1 */
+    private com.squareup.okhttp.Call feedUsingGET1Call(String filter, String role, String wt, Integer startat, Integer size, final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
         Object localVarPostBody = null;
+        
+        // verify the required parameter 'filter' is set
+        if (filter == null) {
+            throw new ApiException("Missing the required parameter 'filter' when calling feedUsingGET1(Async)");
+        }
+        
+        // verify the required parameter 'role' is set
+        if (role == null) {
+            throw new ApiException("Missing the required parameter 'role' when calling feedUsingGET1(Async)");
+        }
         
         // verify the required parameter 'wt' is set
         if (wt == null) {
-            throw new ApiException("Missing the required parameter 'wt' when calling latestUsingGET(Async)");
+            throw new ApiException("Missing the required parameter 'wt' when calling feedUsingGET1(Async)");
         }
         
 
         // create path and map variables
-        String localVarPath = "/v1/api/latest".replaceAll("\\{format\\}","json");
+        String localVarPath = "/v1/user/feed".replaceAll("\\{format\\}","json");
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        if (lang != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("multi", "lang", lang));
-        if (tz != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "tz", tz));
-        if (tr != null)
-        localVarQueryParams.addAll(apiClient.parameterToPairs("", "tr", tr));
+        if (filter != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "filter", filter));
+        if (startat != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "startat", startat));
+        if (size != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "size", size));
+        if (role != null)
+        localVarQueryParams.addAll(apiClient.parameterToPairs("", "role", role));
         if (wt != null)
         localVarQueryParams.addAll(apiClient.parameterToPairs("", "wt", wt));
 
@@ -91,7 +102,7 @@ public class LatestApi {
         Map<String, Object> localVarFormParams = new HashMap<String, Object>();
 
         final String[] localVarAccepts = {
-            "application/xml", "application/json"
+            "application/atom+xml", "application/rss+xml"
         };
         final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
         if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
@@ -119,48 +130,51 @@ public class LatestApi {
     }
 
     /**
-     * Latest
-     * Return the latest news articles, no word cluster, no facets
+     * Build an RSS feed from a user named filter
+     * Search some news items by user named filter and return result as ATOM/RSS feed
+     * @param filter The name of the user filter to query (required)
+     * @param role The desired enclosure role (required)
      * @param wt The desired newsItem link format (required)
-     * @param lang Give the lang to search content (optional)
-     * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
-     * @param tr Include translated document (optional, default to false)
-     * @return Result
+     * @param startat Return news item later than this startat (optional, default to 0)
+     * @param size The number of responses (optional, default to 50)
+     * @return Object
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public Result latestUsingGET(String wt, List<String> lang, String tz, Boolean tr) throws ApiException {
-        ApiResponse<Result> resp = latestUsingGETWithHttpInfo(wt, lang, tz, tr);
+    public Object feedUsingGET1(String filter, String role, String wt, Integer startat, Integer size) throws ApiException {
+        ApiResponse<Object> resp = feedUsingGET1WithHttpInfo(filter, role, wt, startat, size);
         return resp.getData();
     }
 
     /**
-     * Latest
-     * Return the latest news articles, no word cluster, no facets
+     * Build an RSS feed from a user named filter
+     * Search some news items by user named filter and return result as ATOM/RSS feed
+     * @param filter The name of the user filter to query (required)
+     * @param role The desired enclosure role (required)
      * @param wt The desired newsItem link format (required)
-     * @param lang Give the lang to search content (optional)
-     * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
-     * @param tr Include translated document (optional, default to false)
-     * @return ApiResponse&lt;Result&gt;
+     * @param startat Return news item later than this startat (optional, default to 0)
+     * @param size The number of responses (optional, default to 50)
+     * @return ApiResponse&lt;Object&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public ApiResponse<Result> latestUsingGETWithHttpInfo(String wt, List<String> lang, String tz, Boolean tr) throws ApiException {
-        com.squareup.okhttp.Call call = latestUsingGETCall(wt, lang, tz, tr, null, null);
-        Type localVarReturnType = new TypeToken<Result>(){}.getType();
+    public ApiResponse<Object> feedUsingGET1WithHttpInfo(String filter, String role, String wt, Integer startat, Integer size) throws ApiException {
+        com.squareup.okhttp.Call call = feedUsingGET1Call(filter, role, wt, startat, size, null, null);
+        Type localVarReturnType = new TypeToken<Object>(){}.getType();
         return apiClient.execute(call, localVarReturnType);
     }
 
     /**
-     * Latest (asynchronously)
-     * Return the latest news articles, no word cluster, no facets
+     * Build an RSS feed from a user named filter (asynchronously)
+     * Search some news items by user named filter and return result as ATOM/RSS feed
+     * @param filter The name of the user filter to query (required)
+     * @param role The desired enclosure role (required)
      * @param wt The desired newsItem link format (required)
-     * @param lang Give the lang to search content (optional)
-     * @param tz Tell which timezone you are located. By default GMT. (optional, default to GMT)
-     * @param tr Include translated document (optional, default to false)
+     * @param startat Return news item later than this startat (optional, default to 0)
+     * @param size The number of responses (optional, default to 50)
      * @param callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public com.squareup.okhttp.Call latestUsingGETAsync(String wt, List<String> lang, String tz, Boolean tr, final ApiCallback<Result> callback) throws ApiException {
+    public com.squareup.okhttp.Call feedUsingGET1Async(String filter, String role, String wt, Integer startat, Integer size, final ApiCallback<Object> callback) throws ApiException {
 
         ProgressResponseBody.ProgressListener progressListener = null;
         ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
@@ -181,8 +195,8 @@ public class LatestApi {
             };
         }
 
-        com.squareup.okhttp.Call call = latestUsingGETCall(wt, lang, tz, tr, progressListener, progressRequestListener);
-        Type localVarReturnType = new TypeToken<Result>(){}.getType();
+        com.squareup.okhttp.Call call = feedUsingGET1Call(filter, role, wt, startat, size, progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<Object>(){}.getType();
         apiClient.executeAsync(call, localVarReturnType, callback);
         return call;
     }

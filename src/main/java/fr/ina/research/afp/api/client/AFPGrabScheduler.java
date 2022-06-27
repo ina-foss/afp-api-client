@@ -19,8 +19,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 
-import fr.ina.research.afp.api.model.Parameters.LangEnum;
 import fr.ina.research.afp.api.model.extended.FullNewsDocument;
+import fr.ina.research.afp.api.model.extended.LangEnum;
 
 public class AFPGrabScheduler {
 	private class AFPThreadFactory implements ThreadFactory {
@@ -48,6 +48,7 @@ public class AFPGrabScheduler {
 
 	private int scheduleEvery;
 	private boolean enableProxy;
+	private boolean retrieveMedias;
 	private String proxy;
 	private int proxyPort;
 	private Logger logger;
@@ -67,6 +68,7 @@ public class AFPGrabScheduler {
 
 		listeners = new HashSet<>();
 		setLang(LangEnum.FR);
+		setRetrieveMedias(false);
 		lastRetrievedDocuments = new HashMap<>();
 	}
 
@@ -91,7 +93,7 @@ public class AFPGrabScheduler {
 				maxDocs = lastMinutes * 50;
 			}
 
-			AFPGrabSession gs = afp.grabSearchLastMinutes(true, lastMinutes, maxDocs);
+			AFPGrabSession gs = afp.grabSearchLastMinutes(true, retrieveMedias, lastMinutes, maxDocs);
 			if (gs == null) {
 				logger.error("Unable to call AFP api !");
 				return;
@@ -163,19 +165,19 @@ public class AFPGrabScheduler {
 		return scheduleEvery;
 	}
 
-	public AFPGrabSession grabSearchDay(boolean downloadItems, Date date, int maxdocs) {
+	public AFPGrabSession grabSearchDay(boolean downloadXML, Date date, int maxdocs) {
 		init();
-		return afp.grabSearchDay(downloadItems, date, maxdocs);
+		return afp.grabSearchDay(downloadXML, retrieveMedias, date, maxdocs);
 	}
 
-	public AFPGrabSession grabSearchMax(boolean downloadItems, int maxdocs) {
+	public AFPGrabSession grabSearchMax(boolean downloadXML, int maxdocs) {
 		init();
-		return afp.grabSearchMax(downloadItems, maxdocs);
+		return afp.grabSearchMax(downloadXML, retrieveMedias, maxdocs);
 	}
 
-	public AFPGrabSession grabSearchMaxProduct(boolean downloadItems, String product, int maxdocs) {
+	public AFPGrabSession grabSearchMaxProduct(boolean downloadXML, String product, int maxdocs) {
 		init();
-		return afp.grabSearchMaxProduct(downloadItems, product, maxdocs);
+		return afp.grabSearchMaxProduct(downloadXML, retrieveMedias, product, maxdocs);
 	}
 
 	private void init() {
@@ -255,5 +257,9 @@ public class AFPGrabScheduler {
 		if ((last == null) || aDate.isAfter(last)) {
 			lastRetrievedDocuments.put(product, aDate);
 		}
+	}
+
+	public void setRetrieveMedias(boolean retrieveMedias) {
+		this.retrieveMedias = retrieveMedias;
 	}
 }

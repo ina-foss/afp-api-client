@@ -13,12 +13,13 @@ import org.slf4j.Logger;
 
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
 import fr.ina.research.afp.ApiClient;
 import fr.ina.research.afp.ApiException;
 import fr.ina.research.afp.Pair;
+import fr.ina.research.afp.ProgressRequestBody;
 
 public class AFPAuthenticationManager {
 	public class MyOAuthToken {
@@ -202,9 +203,12 @@ public class AFPAuthenticationManager {
 		}
 		Response response = null;
 		try {
-			Request r = apiClient.buildRequest("/oauth/token", method, localVarQueryParams, null, localVarHeaderParams, formParams, localVarAuthNames, null);
-			logger.debug(r.toString());
-			Call call = apiClient.buildCall(r);
+//			Request r = apiClient.buildRequest("/oauth/token", method, localVarQueryParams, null, localVarHeaderParams, formParams, localVarAuthNames, null);
+//			logger.debug(r.toString());
+//			Call call = apiClient.buildCall(r);
+			
+			Call call = apiClient.buildCall("/oauth/token", method, localVarQueryParams, null, localVarHeaderParams, formParams, localVarAuthNames, null); 
+					
 			response = call.execute();
 			if (response.isSuccessful()) {
 				MyOAuthToken newToken = apiClient.deserialize(response, myOAuthTokenType);
@@ -229,10 +233,10 @@ public class AFPAuthenticationManager {
 		this.refreshBefore = refreshBefore;
 	}
 
-	public void setTimeouts(int connect, int read, int write) {
+	public void setTimeout(int connect) {
 		apiClient.setConnectTimeout(connect);
-		apiClient.setReadTimeout(read);
-		apiClient.setWriteTimeout(write);
+//		apiClient.setReadTimeout(read);
+//		apiClient.setWriteTimeout(write);
 	}
 
 }

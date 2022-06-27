@@ -43,13 +43,13 @@ import fr.ina.research.afp.api.SearchApi;
 import fr.ina.research.afp.api.model.DateRange;
 import fr.ina.research.afp.api.model.NewsDocument;
 import fr.ina.research.afp.api.model.Parameters;
-import fr.ina.research.afp.api.model.Parameters.LangEnum;
 import fr.ina.research.afp.api.model.Result;
 import fr.ina.research.afp.api.model.extended.FullMediaItem;
 import fr.ina.research.afp.api.model.extended.FullMediaItem.MediaFile;
 import fr.ina.research.afp.api.model.extended.FullNewsDocument;
 import fr.ina.research.afp.api.model.extended.FullParameter;
 import fr.ina.research.afp.api.model.extended.FullResult;
+import fr.ina.research.afp.api.model.extended.LangEnum;
 
 public class AFPDataGrabber {
 	public final static String API_DOCS_FILE = "api_docs.json";
@@ -106,7 +106,11 @@ public class AFPDataGrabber {
 							fmi.setUno(uno);
 							fmi.setCreator((String) bagMap.get("creator"));
 							fmi.setCaption((String) bagMap.get("caption"));
-							fmi.setProvider((String) bagMap.get("provider"));
+							try {
+								fmi.setProvider((String) bagMap.get("provider"));
+							} catch (ClassCastException e) {
+								fmi.setProvider((String) ((Map) bagMap.get("provider")).get("name"));
+							}
 
 							List<Map> medias = (List<Map>) bagMap.get("medias");
 							for (Map media : medias) {
@@ -320,7 +324,7 @@ public class AFPDataGrabber {
 		return dir;
 	}
 
-	private AFPGrabSession grabSearch(boolean downloadItems, Parameters p, String postfix) {
+	private AFPGrabSession grabSearch(boolean downloadXML, boolean downloadMedias, Parameters p, String postfix) {
 		try {
 			SearchApi api = new SearchApi();
 			String token = aam.getToken();
@@ -340,7 +344,7 @@ public class AFPDataGrabber {
 
 			Result r = api.searchUsingPOST1(p, "xml");
 
-			return processResponse(downloadItems, new FullResult(r, System.currentTimeMillis()), dir, api.getApiClient().getHttpClient());
+			return processResponse(downloadXML, downloadMedias, new FullResult(r, System.currentTimeMillis()), dir, api.getApiClient().getHttpClient());
 		} catch (ApiException apie) {
 			logger.error(apie.toString());
 			logger.error("API error", apie);
@@ -354,23 +358,23 @@ public class AFPDataGrabber {
 		}
 	}
 
-	public AFPGrabSession grabSearchDay(boolean downloadItems, Date date, int maxdocs) {
-		return grabSearch(downloadItems, queryDay(date, maxdocs), "date-" + dateDF.format(date) + "-" + maxdocs);
+	public AFPGrabSession grabSearchDay(boolean downloadXML, boolean downloadMedias, Date date, int maxdocs) {
+		return grabSearch(downloadXML, downloadMedias, queryDay(date, maxdocs), "date-" + dateDF.format(date) + "-" + maxdocs);
 	}
 
-	public AFPGrabSession grabSearchLastMinutes(boolean downloadItems, int lastMinutes, int maxdocs) {
-		return grabSearch(downloadItems, query(lastMinutes, maxdocs), "lastmin-" + lastMinutes + "-" + maxdocs);
+	public AFPGrabSession grabSearchLastMinutes(boolean downloadXML, boolean downloadMedias, int lastMinutes, int maxdocs) {
+		return grabSearch(downloadXML, downloadMedias, query(lastMinutes, maxdocs), "lastmin-" + lastMinutes + "-" + maxdocs);
 	}
 
-	public AFPGrabSession grabSearchMax(boolean downloadItems, int maxdocs) {
-		return grabSearch(downloadItems, query(maxdocs), "maxdocs-" + maxdocs);
+	public AFPGrabSession grabSearchMax(boolean downloadXML, boolean downloadMedias, int maxdocs) {
+		return grabSearch(downloadXML, downloadMedias, query(maxdocs), "maxdocs-" + maxdocs);
 	}
 
-	public AFPGrabSession grabSearchMaxProduct(boolean downloadItems, String product, int maxdocs) {
-		return grabSearch(downloadItems, queryProduct(query(maxdocs), product), product + "-maxdocs-" + maxdocs);
+	public AFPGrabSession grabSearchMaxProduct(boolean downloadXML, boolean downloadMedias, String product, int maxdocs) {
+		return grabSearch(downloadXML, downloadMedias, queryProduct(query(maxdocs), product), product + "-maxdocs-" + maxdocs);
 	}
 
-	private AFPGrabSession processResponse(boolean downloadItems, FullResult r, File dir, OkHttpClient httpClient) throws IOException {
+	private AFPGrabSession processResponse(boolean downloadXML, boolean downloadMedias, FullResult r, File dir, OkHttpClient httpClient) throws IOException {
 		FileWriter w = new FileWriter(getDocsFile(dir));
 		w.write(serializeToString(r));
 		w.close();
@@ -381,7 +385,7 @@ public class AFPDataGrabber {
 		List<FullNewsDocument> allDocuments = asFullDocuments(dir, r);
 		gs.setAllDocuments(allDocuments);
 
-		if (downloadItems) {
+		if (downloadXML) {
 			List<FullNewsDocument> newDocuments = new ArrayList<>();
 			for (FullNewsDocument fd : allDocuments) {
 				if (!cache.isInCache(fd.getFullUno())) {
@@ -391,12 +395,14 @@ public class AFPDataGrabber {
 					} catch (IOException e) {
 						logger.error(e.getMessage());
 					}
-					for (FullMediaItem fmi : fd.getMediaItems()) {
-						for (MediaFile mf : fmi.getFiles()) {
-							try {
-								getFile(mf.getHref(), mf.getLocalFile(), httpClient);
-							} catch (IOException e) {
-								logger.error(e.getMessage());
+					if (downloadMedias) {
+						for (FullMediaItem fmi : fd.getMediaItems()) {
+							for (MediaFile mf : fmi.getFiles()) {
+								try {
+									getFile(mf.getHref(), mf.getLocalFile(), httpClient);
+								} catch (IOException e) {
+									logger.error(e.getMessage());
+								}
 							}
 						}
 					}
@@ -414,7 +420,7 @@ public class AFPDataGrabber {
 
 	private Parameters query(int maxdocs) {
 		Parameters p = new Parameters();
-		p.setLang(lng);
+		p.setLang(lng.toString());
 		p.setMaxRows(maxdocs);
 		p.setSortField("published");
 		p.setSortOrder("desc");
@@ -455,7 +461,8 @@ public class AFPDataGrabber {
 	private Parameters queryProduct(Parameters p, String product) {
 		FullParameter fp1 = new FullParameter();
 		fp1.setName("product");
-		fp1.setIn(new String[] { product });
+		fp1.setIn(new String[] {
+				product });
 		p.setQuery(fp1);
 		return p;
 	}

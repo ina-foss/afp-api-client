@@ -10,8 +10,8 @@ import org.slf4j.LoggerFactory;
 import fr.ina.research.afp.api.client.AFPDataGrabber;
 import fr.ina.research.afp.api.client.AFPDataGrabberCache;
 import fr.ina.research.afp.api.client.AFPGrabSession;
-import fr.ina.research.afp.api.model.Parameters.LangEnum;
 import fr.ina.research.afp.api.model.extended.FullNewsDocument;
+import fr.ina.research.afp.api.model.extended.LangEnum;
 
 public class GetSomeAFPData {
 	private final static File dataDir = new File("/tmp/afp");
@@ -31,9 +31,9 @@ public class GetSomeAFPData {
 		// authentication.put(AFPAuthenticationManager.KEY_PASSWORD, "password");
 
 		AFPDataGrabber afp = new AFPDataGrabber(LangEnum.EN, authentication, logger, dataDir,
-				AFPDataGrabberCache.noCache(), "https://api.afp.com/", proxy);
+				AFPDataGrabberCache.noCache(), "https://afp-apicore-prod.afp.com", proxy);
 
-		AFPGrabSession gs = afp.grabSearchMax(false, 10);
+		AFPGrabSession gs = afp.grabSearchMax(false, false, 10);
 		logger.info("Grabbed " + gs.getAllDocuments().size() + " documents as [" + gs.getAuthenticatedAs() + "] in "
 				+ gs.getDir());
 		for (FullNewsDocument nd : gs.getAllDocuments()) {

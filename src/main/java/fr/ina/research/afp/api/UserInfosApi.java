@@ -23,81 +23,142 @@
  */
 
 
-package fr.ina.research.afp;
+package fr.ina.research.afp.api;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2022-06-23T14:46:12.287+02:00")
-public class ApiException extends Exception {
-    private int code = 0;
-    private Map<String, List<String>> responseHeaders = null;
-    private String responseBody = null;
+import com.google.gson.reflect.TypeToken;
 
-    public ApiException() {}
+import fr.ina.research.afp.ApiCallback;
+import fr.ina.research.afp.ApiClient;
+import fr.ina.research.afp.ApiException;
+import fr.ina.research.afp.ApiResponse;
+import fr.ina.research.afp.Configuration;
+import fr.ina.research.afp.Pair;
+import fr.ina.research.afp.ProgressRequestBody;
+import fr.ina.research.afp.ProgressResponseBody;
+import fr.ina.research.afp.api.model.AdminUserResponse;
 
-    public ApiException(Throwable throwable) {
-        super(throwable);
+public class UserInfosApi {
+    private ApiClient apiClient;
+
+    public UserInfosApi() {
+        this(Configuration.getDefaultApiClient());
     }
 
-    public ApiException(String message) {
-        super(message);
+    public UserInfosApi(ApiClient apiClient) {
+        this.apiClient = apiClient;
     }
 
-    public ApiException(String message, Throwable throwable, int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        super(message, throwable);
-        this.code = code;
-        this.responseHeaders = responseHeaders;
-        this.responseBody = responseBody;
+    public ApiClient getApiClient() {
+        return apiClient;
     }
 
-    public ApiException(String message, int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        this(message, (Throwable) null, code, responseHeaders, responseBody);
+    public void setApiClient(ApiClient apiClient) {
+        this.apiClient = apiClient;
     }
 
-    public ApiException(String message, Throwable throwable, int code, Map<String, List<String>> responseHeaders) {
-        this(message, throwable, code, responseHeaders, null);
-    }
+    /* Build call for meUsingGET */
+    private com.squareup.okhttp.Call meUsingGETCall(final ProgressResponseBody.ProgressListener progressListener, final ProgressRequestBody.ProgressRequestListener progressRequestListener) throws ApiException {
+        Object localVarPostBody = null;
+        
 
-    public ApiException(int code, Map<String, List<String>> responseHeaders, String responseBody) {
-        this((String) null, (Throwable) null, code, responseHeaders, responseBody);
-    }
+        // create path and map variables
+        String localVarPath = "/v1/user/me".replaceAll("\\{format\\}","json");
 
-    public ApiException(int code, String message) {
-        super(message);
-        this.code = code;
-    }
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
 
-    public ApiException(int code, String message, Map<String, List<String>> responseHeaders, String responseBody) {
-        this(code, message);
-        this.responseHeaders = responseHeaders;
-        this.responseBody = responseBody;
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+
+        final String[] localVarAccepts = {
+            "application/xml", "application/json"
+        };
+        final String localVarAccept = apiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) localVarHeaderParams.put("Accept", localVarAccept);
+
+        final String[] localVarContentTypes = {
+            "*_/_*"
+        };
+        final String localVarContentType = apiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        if(progressListener != null) {
+            apiClient.getHttpClient().networkInterceptors().add(new com.squareup.okhttp.Interceptor() {
+                @Override
+                public com.squareup.okhttp.Response intercept(com.squareup.okhttp.Interceptor.Chain chain) throws IOException {
+                    com.squareup.okhttp.Response originalResponse = chain.proceed(chain.request());
+                    return originalResponse.newBuilder()
+                    .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                    .build();
+                }
+            });
+        }
+
+        String[] localVarAuthNames = new String[] { "oauth2" };
+        return apiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarAuthNames, progressRequestListener);
     }
 
     /**
-     * Get the HTTP status code.
-     *
-     * @return HTTP status code
+     * Return me user infos
+     * Return the current user infos
+     * @return AdminUserResponse
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public int getCode() {
-        return code;
+    public AdminUserResponse meUsingGET() throws ApiException {
+        ApiResponse<AdminUserResponse> resp = meUsingGETWithHttpInfo();
+        return resp.getData();
     }
 
     /**
-     * Get the HTTP response headers.
-     *
-     * @return A map of list of string
+     * Return me user infos
+     * Return the current user infos
+     * @return ApiResponse&lt;AdminUserResponse&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      */
-    public Map<String, List<String>> getResponseHeaders() {
-        return responseHeaders;
+    public ApiResponse<AdminUserResponse> meUsingGETWithHttpInfo() throws ApiException {
+        com.squareup.okhttp.Call call = meUsingGETCall(null, null);
+        Type localVarReturnType = new TypeToken<AdminUserResponse>(){}.getType();
+        return apiClient.execute(call, localVarReturnType);
     }
 
     /**
-     * Get the HTTP response body.
-     *
-     * @return Response body in the form of string
+     * Return me user infos (asynchronously)
+     * Return the current user infos
+     * @param callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      */
-    public String getResponseBody() {
-        return responseBody;
+    public com.squareup.okhttp.Call meUsingGETAsync(final ApiCallback<AdminUserResponse> callback) throws ApiException {
+
+        ProgressResponseBody.ProgressListener progressListener = null;
+        ProgressRequestBody.ProgressRequestListener progressRequestListener = null;
+
+        if (callback != null) {
+            progressListener = new ProgressResponseBody.ProgressListener() {
+                @Override
+                public void update(long bytesRead, long contentLength, boolean done) {
+                    callback.onDownloadProgress(bytesRead, contentLength, done);
+                }
+            };
+
+            progressRequestListener = new ProgressRequestBody.ProgressRequestListener() {
+                @Override
+                public void onRequestProgress(long bytesWritten, long contentLength, boolean done) {
+                    callback.onUploadProgress(bytesWritten, contentLength, done);
+                }
+            };
+        }
+
+        com.squareup.okhttp.Call call = meUsingGETCall(progressListener, progressRequestListener);
+        Type localVarReturnType = new TypeToken<AdminUserResponse>(){}.getType();
+        apiClient.executeAsync(call, localVarReturnType, callback);
+        return call;
     }
 }
