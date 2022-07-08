@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -344,6 +345,8 @@ public class AFPDataGrabber {
 
 			Result r = api.searchUsingPOST1(p, "xml");
 
+			logger.debug("response : " + (r.getResponse() != null ? r.getResponse().getNumFound() : "null"));
+
 			return processResponse(downloadXML, downloadMedias, new FullResult(r, System.currentTimeMillis()), dir, api.getApiClient().getHttpClient());
 		} catch (ApiException apie) {
 			logger.error(apie.toString());
@@ -359,7 +362,11 @@ public class AFPDataGrabber {
 	}
 
 	public AFPGrabSession grabSearchDay(boolean downloadXML, boolean downloadMedias, Date date, int maxdocs) {
-		return grabSearch(downloadXML, downloadMedias, queryDay(date, maxdocs), "date-" + dateDF.format(date) + "-" + maxdocs);
+		return grabSearch(downloadXML, downloadMedias, queryDayDay(date, maxdocs), "date-" + dateDF.format(date) + "-" + maxdocs);
+	}
+	
+	public AFPGrabSession grabSearchDays(boolean downloadXML, boolean downloadMedias, Date d1, Date d2, int maxdocs) {
+		return grabSearch(downloadXML, downloadMedias, queryDayDay(d1, d2, maxdocs), "date-" + dateDF.format(d1) + "-" + dateDF.format(d2) + "-" + maxdocs);
 	}
 
 	public AFPGrabSession grabSearchLastMinutes(boolean downloadXML, boolean downloadMedias, int lastMinutes, int maxdocs) {
@@ -434,12 +441,16 @@ public class AFPDataGrabber {
 	}
 
 	private Parameters query(long fromMinutes, long toMinutes, int maxdocs) {
+		return query("now-" + fromMinutes + "m", "now-" + toMinutes + "m", maxdocs);
+	}
+
+	private Parameters query(String from, String to, int maxdocs) {
 		Parameters p = query(maxdocs);
-		p.setDateRange(new DateRange().from("now-" + fromMinutes + "m").to("now-" + toMinutes + "m"));
+		p.setDateRange(new DateRange().from(from).to(to));
 		return p;
 	}
 
-	private Parameters queryDay(Date day, int maxdocs) {
+	private Parameters queryDayMinutes(Date day, int maxdocs) {
 		Calendar c = new GregorianCalendar();
 		c.setTime(day);
 		c.set(Calendar.HOUR_OF_DAY, 0);
@@ -456,6 +467,40 @@ public class AFPDataGrabber {
 		long toMinutes = (long) Math.ceil(Duration.between(end, now).get(ChronoUnit.SECONDS) / 60.);
 
 		return query(fromMinutes, toMinutes, maxdocs);
+	}
+
+	private Parameters queryDayDay(Date day, int maxdocs) {
+		Calendar c = new GregorianCalendar();
+		c.setTime(day);
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		ZonedDateTime start = c.toInstant().atZone(ZoneId.systemDefault());
+
+		c.add(Calendar.DAY_OF_MONTH, 1);
+		ZonedDateTime end = c.toInstant().atZone(ZoneId.systemDefault());
+
+		return query(DateTimeFormatter.ISO_INSTANT.format(start), DateTimeFormatter.ISO_INSTANT.format(end), maxdocs);
+	}
+
+	private Parameters queryDayDay(Date day1, Date day2, int maxdocs) {
+		Calendar c = new GregorianCalendar();
+		c.setTime(day1);
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		ZonedDateTime start = c.toInstant().atZone(ZoneId.systemDefault());
+
+		c.setTime(day2);
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		ZonedDateTime end = c.toInstant().atZone(ZoneId.systemDefault());
+
+		return query(DateTimeFormatter.ISO_INSTANT.format(start), DateTimeFormatter.ISO_INSTANT.format(end), maxdocs);
 	}
 
 	private Parameters queryProduct(Parameters p, String product) {

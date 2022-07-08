@@ -169,6 +169,11 @@ public class AFPGrabScheduler {
 		init();
 		return afp.grabSearchDay(downloadXML, retrieveMedias, date, maxdocs);
 	}
+	
+	public AFPGrabSession grabSearchDays(boolean downloadXML, Date d1, Date d2, int maxdocs) {
+		init();
+		return afp.grabSearchDays(downloadXML, retrieveMedias, d1, d2, maxdocs);
+	}
 
 	public AFPGrabSession grabSearchMax(boolean downloadXML, int maxdocs) {
 		init();
